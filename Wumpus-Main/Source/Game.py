@@ -80,9 +80,9 @@ class Game:
         self.btnContinue = None
 
     def initBtnEndGame(self):
-        self.btnBack = Button(MESSAGE_WINDOW['LEFT'] + 20, MESSAGE_WINDOW['BOTTOM'] - 100, 200, 60, screen,
+        self.btnBack = Button(MESSAGE_WINDOW['LEFT'] + 30, MESSAGE_WINDOW['BOTTOM'] - 100, 200, 60, screen,
                               40, 'BACK', self.back_click)
-        self.btnRestart = Button(WIDTH - 220, MESSAGE_WINDOW['BOTTOM'] - 100, 200, 60, screen,
+        self.btnRestart = Button(WIDTH - 250, MESSAGE_WINDOW['BOTTOM'] - 100, 200, 60, screen,
                                  40, 'RESTART', self.restart_click)
         self.btnPause = Button2(MESSAGE_WINDOW['LEFT'] + (WIDTH - MESSAGE_WINDOW['LEFT'] - 200) // 2,
                                 MESSAGE_WINDOW['BOTTOM'] - 100, 200, 70, screen,

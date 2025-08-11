@@ -21,7 +21,7 @@ GREY: tuple = (200, 200, 200)
 # --- End Define Color
 
 # Board game default setting
-NUMBER_CELL: int = 10  # default 10 row and 10 col
+NUMBER_CELL: int = 8  # Changed to 8 for N=8 requirement
 DEFAULT_WUMPUS_COUNT: int = 2  # Default number of Wumpus (K=2)
 DEFAULT_PIT_PROBABILITY: float = 0.2  # Default pit probability (p=0.2)
 SPACING_CELL: int = 1

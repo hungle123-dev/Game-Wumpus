@@ -9,6 +9,7 @@ class Solution(Base):
     def __init__(self, input_file, output_file):
         super().__init__(output_file)
         self.KB = KnowledgeBase()
+        self.game_ended = False  # NEW: Flag to track if game has ended
         self.read_map(input_file)
 
     def KB_logic_1(self, cell: Cell):
@@ -121,7 +122,17 @@ class Solution(Base):
             self.add_KB(self.agent_cell)
 
     def backtracking_search(self):
+        # NEW: Check game ended flag first
+        if self.game_ended:
+            return False
+            
         self.top_condition()
+
+        # NEW: Check if agent reached exit door (0,0) - END GAME IMMEDIATELY
+        if self.agent_cell.map_pos[0] == 0 and self.agent_cell.map_pos[1] == 0:
+            self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
+            self.game_ended = True  # Set flag to prevent further processing
+            return False  # End game immediately when reaching (0,0)
 
         # Initialize valid_adj_cell_list.
         valid_adj_cell_list = self.agent_cell.get_adj_cell(self.cell_matrix)
@@ -257,38 +268,116 @@ class Solution(Base):
         # try move to all valid cell with backtracking
         self.agent_cell.update_child(valid_adj_cell_list)
         for new_cell in self.agent_cell.child:
+            # NEW: Check if game already ended
+            if self.game_ended:
+                return False
+                
             self.move_to(new_cell)
             self.append_event_to_output_file('Move to: ' + str(self.agent_cell.map_pos))
 
-            if not self.backtracking_search():
-                return False
+            # NEW: Check if we reached (0,0) after moving - STOP IMMEDIATELY!
+            if self.agent_cell.map_pos[0] == 0 and self.agent_cell.map_pos[1] == 0:
+                self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
+                self.game_ended = True  # Set flag
+                return False  # End game immediately, DON'T continue to backtrack!
 
-            # backtrack
-            self.move_to(pre_agent_cell)
-            self.append_event_to_output_file('Backtrack: ' + str(pre_agent_cell.map_pos))
+            search_result = self.backtracking_search()
+            if not search_result:
+                return False  # Propagate the end game signal
+
+            # NEW: Only backtrack if game hasn't ended
+            if not self.game_ended:
+                self.move_to(pre_agent_cell)
+                self.append_event_to_output_file('Backtrack: ' + str(pre_agent_cell.map_pos))
 
         return True
+
+    def navigate_to_exit(self):
+        """Navigate agent back to exit door at (0,0) using explored safe cells"""
+        target_pos = [0, 0]  # Exit door position
+        current_pos = self.agent_cell.map_pos
+        
+        # If already at exit, no need to navigate
+        if current_pos == target_pos:
+            return
+        
+        # Limit attempts to prevent infinite loops
+        max_attempts = 50
+        attempts = 0
+        
+        while self.agent_cell.map_pos != target_pos and attempts < max_attempts:
+            attempts += 1
+            
+            # Find the target cell
+            target_cell = None
+            for row in self.cell_matrix:
+                for cell in row:
+                    if cell.map_pos == target_pos:
+                        target_cell = cell
+                        break
+                if target_cell:
+                    break
+            
+            if target_cell and target_cell.is_explored():
+                # Target is already explored and safe, move directly
+                self.move_to(target_cell)
+                break
+            else:
+                # Target not explored yet, find closest safe explored cell
+                adj_cells = self.agent_cell.get_adj_cell(self.cell_matrix)
+                
+                # Find closest SAFE cell to target
+                best_cell = None
+                min_distance = float('inf')
+                
+                for adj_cell in adj_cells:
+                    # Check if cell is safe (explored and no pit/wumpus)
+                    if (adj_cell.is_explored() and 
+                        not adj_cell.exist_Entity(1) and  # No pit
+                        not adj_cell.exist_Entity(2)):    # No wumpus
+                        
+                        # Calculate Manhattan distance to target
+                        distance = abs(adj_cell.map_pos[0] - target_pos[0]) + abs(adj_cell.map_pos[1] - target_pos[1])
+                        if distance < min_distance:
+                            min_distance = distance
+                            best_cell = adj_cell
+                
+                if best_cell:
+                    self.move_to(best_cell)
+                    # Continue in the loop (not recursive call)
+                else:
+                    # No safe path found, break to avoid infinite loop
+                    break
+        
+        # Final check: if not at target after all attempts, try direct move if target is explored
+        if self.agent_cell.map_pos != target_pos:
+            target_cell = self.cell_matrix[target_pos[0]][target_pos[1]]
+            if target_cell.is_explored():
+                self.move_to(target_cell)
 
     def solve(self):
         # rest file
         file = open(self.output_filename, 'w')
         file.close()
 
-        self.backtracking_search()
+        # Main game loop - agent explores until reaching (0,0) or completing objectives
+        game_result = self.backtracking_search()
+        
+        # If game didn't end by reaching (0,0), check for victory conditions
+        if game_result is not False:
+            victory = True
+            for row in self.cell_matrix:
+                col: Cell
+                for col in row:
+                    # if until have gold or wumpus
+                    if col.exist_Entity(0) or col.exist_Entity(2):
+                        victory = False
+                        break
 
-        victory = True
-        for row in self.cell_matrix:
-            col: Cell
-            for col in row:
-                # if until have gold or wumpus
-                if col.exist_Entity(0) or col.exist_Entity(2):
-                    victory = False
-                    break
+            if victory:
+                self.add_action(Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD)
 
-        if victory:
-            self.add_action(Action.KILL_ALL_WUMPUS_AND_GRAB_ALL_FOOD)
-
-        if self.agent_cell.parent == self.cave_cell:
-            self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
+        # NOTE: No need for additional climb logic here
+        # Game ends immediately when agent reaches (0,0) in backtracking_search()
 
         return self.action_list

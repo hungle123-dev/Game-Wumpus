@@ -49,6 +49,7 @@ class Board(object):
         self.map = None
         self.current_action = None
         self.action_history = []
+        self.game_won = False  # NEW: Flag to track if game is won
         # AgentKnowledgeDisplay will be initialized after MESSAGE_WINDOW is set
         self.knowledge_display = None
         self.image_action = None
@@ -78,7 +79,7 @@ class Board(object):
             MESSAGE_WINDOW['LEFT'] + 10, 
             MESSAGE_WINDOW['TOP'] + 10, 
             WIDTH - MESSAGE_WINDOW['LEFT'] - 30, 
-            HEIGHT - MESSAGE_WINDOW['TOP'] - 60
+            HEIGHT - MESSAGE_WINDOW['TOP'] - 115
         )
         
         # Print initial game state to console
@@ -99,7 +100,7 @@ class Board(object):
                     self.Golds.append(Gold(row, col))
                 if AGENT in cell and self.Agent is None:
                     self.Agent = Agent(row, col, N)
-                    self.Door = Door(row, col)
+                    # NEW: Don't create Door at agent position anymore
                 if PIT in cell:
                     self.Pits.append(Pit(row, col))
                 if WUMPUS in cell:
@@ -108,6 +109,9 @@ class Board(object):
                     self.Breezes.append(Breeze(row, col))
                 if STENCH in cell:
                     self.Stenches.append(Stench(row, col))
+        
+        # NEW: Always create Door at (0,0) - the exit position
+        self.Door = Door(0, 0)
 
     def draw(self, screen: pygame):
         pygame.draw.rect(screen, PURPLE, pygame.Rect(self.width + MARGIN['LEFT'] - self.spacing, MARGIN['TOP'] +
@@ -204,6 +208,10 @@ class Board(object):
                 remove_entity(self.Stenches, pos)
 
     def move(self):
+        # NEW: If game is won, don't process any more moves
+        if self.game_won:
+            return False
+            
         self.delay = False
         self.Arrow = None
         self.message = None
@@ -233,6 +241,16 @@ class Board(object):
         elif action == Action.MOVE_FORWARD:
             self.Agent.move_forward()
             self.score += POINT["MOVE_FORWARD"]
+            
+            # NEW: Check if agent reached exit door (0,0) after moving
+            if self.Agent.row == 0 and self.Agent.col == 0:
+                # Agent reached exit door - STOP EVERYTHING!
+                self.game_won = True  # Set won flag
+                self.action_list.clear()  # Clear all remaining actions
+                self.change_animation = False  # Stop animation
+                self.end_action = Action.CLIMB_OUT_OF_THE_CAVE  # Set end action
+                print("🎉 GAME WON! Agent reached exit door (0,0)")  # Debug
+                return False  # End game immediately
 
         # Climb out the cave
         elif action == Action.CLIMB_OUT_OF_THE_CAVE:
