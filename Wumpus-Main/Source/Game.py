@@ -27,23 +27,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # ---------------------- end create global data ----------------------------
 
 
-def about_us():
-    my_font = pygame.font.Font(FONT_3, 120)
-    text_surface = my_font.render('ABOUT US', False, RED)
-    screen.blit(text_surface, ((WIDTH - text_surface.get_width()) // 2, 30))
-
-    my_font = pygame.font.Font(FONT_1, 50)
-    default_surface = my_font.render('21120439 - Bùi Minh Duy', False, WHITE)
-    text_surface = my_font.render('21120439 - Bùi Minh Duy', False, WHITE)
-    screen.blit(text_surface, ((WIDTH - default_surface.get_width()) // 2, 30 + (HEIGHT - 30) // 4))
-    text_surface = my_font.render('21120447 - Nguyễn Nhật Hào', False, WHITE)
-    screen.blit(text_surface, ((WIDTH - default_surface.get_width()) // 2, 30 + (HEIGHT - 30) // 4 + 80))
-    text_surface = my_font.render('21120453 - Tô Phương Hiếu', False, WHITE)
-    screen.blit(text_surface, ((WIDTH - default_surface.get_width()) // 2, 30 + (HEIGHT - 30) // 4 + 160))
-    text_surface = my_font.render('21120457 - Lê Minh Hoàng', False, WHITE)
-    screen.blit(text_surface, ((WIDTH - default_surface.get_width()) // 2, 30 + (HEIGHT - 30) // 4 + 240))
-
-
 def quit_click():
     pygame.quit()
     sys.exit(0)
@@ -59,7 +42,6 @@ class Game:
         self.map_name = None
         self.result_name = None
         self.clicked = False
-        self.current_item = 0
         self.pause = False
         self.agent_action_count = 0
 
@@ -69,11 +51,7 @@ class Game:
         # Screen Home
         self.btnStart = Button2((WIDTH - 350) // 2, (HEIGHT - 100) // 2 - HEIGHT // 6, 350, 100, screen,
                                 60, 'START', self.start_click, WHITE)
-        self.btnIntroduce = Button2((WIDTH - 350) // 2, (HEIGHT - 100) // 2 + 15, 350, 100, screen,
-                                    60, 'INTRODUCE', self.introduce_click, WHITE)
-        self.btnAbout = Button2((WIDTH - 350) // 2, (HEIGHT - 100) // 2 + HEIGHT // 6 + 30, 350, 100, screen,
-                                60, 'ABOUT US', self.about_click, WHITE)
-        self.btnQuit = Button2((WIDTH - 350) // 2, (HEIGHT - 100) // 2 + HEIGHT // 3 + 45, 350, 100, screen,
+        self.btnQuit = Button2((WIDTH - 350) // 2, (HEIGHT - 100) // 2 + HEIGHT // 6 + 30, 350, 100, screen,
                                60, 'QUIT', quit_click, WHITE)
 
         # Screen Choose map
@@ -100,39 +78,6 @@ class Game:
         self.btnRestart = None
         self.btnPause = None
         self.btnContinue = None
-
-        # Introduce screen
-        self.btnNext = Button2(WIDTH - 200, (HEIGHT - 100) // 2, 100, 100, screen,
-                               100, '>', self.next_click, WHITE)
-        self.btnPrev = Button2(100, (HEIGHT - 100) // 2, 100, 100, screen,
-                               100, '<', self.prev_click, WHITE)
-
-    def next_click(self):
-        if self.clicked:
-            self.current_item = (self.current_item + 1) % len(NAME_ITEM)
-
-    def prev_click(self):
-        if self.clicked:
-            self.current_item -= 1
-            if self.current_item < 0:
-                self.current_item = self.current_item + len(NAME_ITEM)
-
-    def introduce(self):
-        my_font = pygame.font.Font(FONT_3, 120)
-        text_surface = my_font.render('INTRODUCE', False, RED)
-        screen.blit(text_surface, ((WIDTH - text_surface.get_width()) // 2, 30))
-
-        self.btnNext.process()
-        self.btnPrev.process()
-
-        # show text info this item
-        my_font = pygame.font.Font(FONT_3, 100)
-        text_item = my_font.render(NAME_ITEM[self.current_item], False, YELLOW)
-        screen.blit(text_item, ((WIDTH - text_item.get_width()) // 2, (HEIGHT - text_item.get_height()) - 130))
-
-        # show image info this item
-        item = Item(WIDTH // 2, HEIGHT // 2 - 20, NAME_ITEM[self.current_item])
-        item.draw(screen)
 
     def initBtnEndGame(self):
         self.btnBack = Button(MESSAGE_WINDOW['LEFT'] + 20, MESSAGE_WINDOW['BOTTOM'] - 100, 200, 60, screen,
@@ -229,15 +174,6 @@ class Game:
         if self.clicked:
             self.status = "START_MENU"
 
-    def introduce_click(self):
-        if self.clicked:
-            self.current_item = 0
-            self.status = "INTRODUCE_MENU"
-
-    def about_click(self):
-        if self.clicked:
-            self.status = "ABOUT_US_MENU"
-
     def start_click(self):
         if self.clicked:
             self.status = "CHOOSE_MAP"
@@ -318,8 +254,6 @@ class Game:
             if self.status == "START_MENU":
                 screen.blit(text_surface, ((WIDTH - text_surface.get_width()) // 2, 30))
                 self.btnStart.process()
-                self.btnIntroduce.process()
-                self.btnAbout.process()
                 self.btnQuit.process()
             elif self.status == "CHOOSE_MAP":
                 self.btnMap1.process()
@@ -329,10 +263,6 @@ class Game:
                 self.btnMap5.process()
                 self.btnMapRand.process()
                 self.btnAdvance.process()
-            elif self.status == "INTRODUCE_MENU":
-                self.introduce()
-            elif self.status == "ABOUT_US_MENU":
-                about_us()
             elif self.status == "RUN_GAME":
                 self.running_menu = False
                 self.running = True
