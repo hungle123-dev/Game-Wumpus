@@ -157,11 +157,16 @@ class Game:
     def move(self):
         if not self.board.move():
             self.status = "END_GAME"
-        self.agent_action_count += 1
-        if self.map_name == "advance.txt" and self.agent_action_count % 5 == 0:
-            for wumpus in self.board.Wumpus:
-                print(f"Moving Wumpus")
-                wumpus.move_random(self.board)
+        
+        # Only move Wumpus if game is still running (not ended) and not won
+        if self.status != "END_GAME" and not self.board.game_won:
+            self.agent_action_count += 1
+            if self.map_name == "advance.txt" and self.agent_action_count % 5 == 0:
+                for wumpus in self.board.Wumpus:
+                    print(f"Moving Wumpus")
+                    wumpus.move_random(self.board)
+        elif self.board.game_won:
+            print("🛑 Game won - Wumpus movement STOPPED")
 
     def back_click(self):
         self.status = "CHOOSE_MAP"

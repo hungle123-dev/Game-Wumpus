@@ -50,6 +50,7 @@ class Board(object):
         self.current_action = None
         self.action_history = []
         self.game_won = False  # NEW: Flag to track if game is won
+        self.agent_killed_by_wumpus = False  # Track agent death by Wumpus movement
         # AgentKnowledgeDisplay will be initialized after MESSAGE_WINDOW is set
         self.knowledge_display = None
         self.image_action = None
@@ -170,6 +171,9 @@ class Board(object):
         if self.end_action == Action.FALL_INTO_PIT:
             text_surface = my_font.render('DEFEAT', False, RED)
             screen.blit(text_surface, (WIDTH - 400, HEIGHT - 270))
+        elif self.end_action == Action.BE_EATEN_BY_WUMPUS:
+            text_surface = my_font.render('EATEN!', False, RED)
+            screen.blit(text_surface, (WIDTH - 390, HEIGHT - 270))
         elif self.end_action == Action.CLIMB_OUT_OF_THE_CAVE:
             text_surface = my_font.render('DONE !', False, YELLOW)
             screen.blit(text_surface, (WIDTH - 390, HEIGHT - 270))
@@ -210,6 +214,12 @@ class Board(object):
     def move(self):
         # NEW: If game is won, don't process any more moves
         if self.game_won:
+            return False
+            
+        # NEW: Check if agent was killed by Wumpus movement
+        if self.agent_killed_by_wumpus:
+            self.end_action = Action.BE_EATEN_BY_WUMPUS
+            self.change_animation = False
             return False
             
         self.delay = False

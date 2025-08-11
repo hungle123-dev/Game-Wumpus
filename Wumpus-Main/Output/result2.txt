@@ -1105,5 +1105,3 @@ TURN_UP
 MOVE_FORWARD
 Score: 160
 Backtrack: (9, 5)
-CLIMB_OUT_OF_THE_CAVE
-Score: 170
