@@ -2,13 +2,14 @@ import pygame
 
 import utils
 from Entity.Agent import Agent
+from Entity.AgentKnowledgeDisplay import AgentKnowledgeDisplay
 from Entity.Arrow import Arrow
 from Entity.Breeze import Breeze
 from Entity.Cell import Cell
+from Entity.ConsoleVisualizer import console_viz
 from Entity.Door import Door
 from Entity.Gold import Gold
-from Entity.ListView import ListView
-from Entity.Message import Message
+
 from Entity.Pit import Pit
 from Entity.Stench import Stench
 from Entity.ViewImageAction import ImageAction
@@ -46,8 +47,10 @@ class Board(object):
                 + MARGIN['TOP'])
 
         self.map = None
-        self.message = None
-        self.listview = ListView()
+        self.current_action = None
+        self.action_history = []
+        # AgentKnowledgeDisplay will be initialized after MESSAGE_WINDOW is set
+        self.knowledge_display = None
         self.image_action = None
         self.change_animation = True
         # other position entity
@@ -69,6 +72,17 @@ class Board(object):
         MESSAGE_WINDOW['TOP'] = MARGIN['TOP'] + self.spacing
         MESSAGE_WINDOW['BOTTOM'] = HEIGHT - MARGIN['TOP'] - self.spacing
         MESSAGE_WINDOW['LEFT'] = self.width + MARGIN['LEFT'] - self.spacing
+        
+        # Now initialize AgentKnowledgeDisplay with correct MESSAGE_WINDOW values
+        self.knowledge_display = AgentKnowledgeDisplay(
+            MESSAGE_WINDOW['LEFT'] + 10, 
+            MESSAGE_WINDOW['TOP'] + 10, 
+            WIDTH - MESSAGE_WINDOW['LEFT'] - 30, 
+            HEIGHT - MESSAGE_WINDOW['TOP'] - 60
+        )
+        
+        # Print initial game state to console
+        # console_viz.print_game_state(self, "GAME_START")  # Đã tắt console output
 
     def createBoardGame(self, filename):
         N, _map = utils.Utils.readMapInFile(filename, self.cell_dimension, self.spacing)
@@ -127,20 +141,25 @@ class Board(object):
         if not self.change_animation and self.end_action is not None:
             self.handle_end_game(screen)
 
-        if self.message is not None:
-            self.message.draw(screen)
+        # Draw image action if available
         if self.image_action is not None and self.change_animation:
             self.image_action.draw(screen)
 
-        self.listview.draw(screen)
+        # Draw agent knowledge display (now replaces ListView and Message)
+        if self.knowledge_display is not None:
+            self.knowledge_display.draw(screen, self.Agent, self, self.current_action, self.action_history)
 
         remove_entity(self.Walls, self.Agent.getRC())
 
     def scroll_up(self):
-        self.listview.scroll_up()
+        # Now handled by knowledge display
+        if self.knowledge_display is not None:
+            self.knowledge_display.scroll_up()
 
     def scroll_down(self):
-        self.listview.scroll_down()
+        # Now handled by knowledge display  
+        if self.knowledge_display is not None:
+            self.knowledge_display.scroll_down()
 
     def handle_end_game(self, screen):
         my_font = pygame.font.Font(FONT_1, 100)
@@ -190,7 +209,7 @@ class Board(object):
         self.message = None
 
         if len(self.action_list) == 0:
-            self.listview.show_scrollbar()
+            # No more actions - game is finishing
             self.change_animation = False
             return False
 
@@ -251,10 +270,24 @@ class Board(object):
         elif action == Action.FALL_INTO_PIT:
             self.score += POINT["DYING"]
 
-        self.message = Message(action.name)
-        self.listview.add_item(action.name)
-        self.listview.hide_scrollbar()
+        # Update action tracking
+        if action:
+            self.current_action = action.name
+            action_display = action.name.replace("_", " ")
+            self.action_history.append(action_display)
+            
+            # Limit action history to prevent memory issues  
+            if len(self.action_history) > 50:
+                self.action_history.pop(0)
+        
+        # Keep image action for visual feedback
+        if self.image_action is not None and self.change_animation:
+            # This will be drawn separately if needed
+            pass
         self.image_action = ImageAction(action)
+        
+        # Print current game state to console
+        # console_viz.print_game_state(self, action.name)  # Đã tắt console output
 
         return True
     

@@ -8,7 +8,7 @@ from Menu.Button2 import Button2
 from Menu.Item import Item
 from Run.RandMap import random_Map
 from constants import (NAME_WINDOW, FPS, WIDTH, HEIGHT, ICON_NAME, BLACK, MESSAGE_WINDOW, MARGIN, BG_IMAGE, FONT_3, RED,
-                       WHITE, FONT_1, NAME_ITEM, YELLOW, NUMBER_CELL)
+                       WHITE, FONT_1, NAME_ITEM, YELLOW, NUMBER_CELL, DEFAULT_WUMPUS_COUNT, DEFAULT_PIT_PROBABILITY)
 
 # --------------------- initial pygame -----------------------------
 pygame.init()
@@ -95,15 +95,13 @@ class Game:
         if self.clicked:
             self.pause = True
             self.clicked = False
-            if self.board is not None:
-                self.board.listview.show_scrollbar()
+            # Pause functionality - no need for scrollbar since we removed ListView
 
     def continue_click(self):
         if self.clicked:
             self.pause = False
             self.clicked = False
-            if self.board is not None:
-                self.board.listview.hide_scrollbar()
+            # Continue functionality - no need for scrollbar since we removed ListView
 
     def choose_map_1(self):
         if self.clicked:
@@ -143,7 +141,8 @@ class Game:
     def choose_rand_map(self):
         if self.clicked:
             self.map_name = "randMap.txt"
-            random_Map(NUMBER_CELL, self.map_name)
+            # Use new parameters for random map generation
+            random_Map(NUMBER_CELL, self.map_name, DEFAULT_WUMPUS_COUNT, DEFAULT_PIT_PROBABILITY)
             self.result_name = "resultRandMap.txt"
             self.status = "RUN_GAME"
             pygame.display.set_caption(NAME_WINDOW + ' - Random map')

@@ -6,46 +6,73 @@ from constants import ROOT_INPUT
 DDX = [(0, 1), (0, -1), (-1, 0), (1, 0)]
 
 
-def random_Map(N: int = 10, map_name: str = "randMap.txt") -> None:
-    _map = [['' for _ in range(10)] for _ in range(10)]
-    agent_r = random.randint(0, 9)
-    agent_c = random.randint(0, 9)
+def random_Map(N: int = 10, map_name: str = "randMap.txt", K: int = 2, p: float = 0.2) -> None:
+    """
+    Generate random N x N Wumpus World map
+    Args:
+        N: Grid size (default 10)
+        map_name: Output file name
+        K: Number of Wumpus (default 2)
+        p: Pit probability (default 0.2)
+    """
+    _map = [['' for _ in range(N)] for _ in range(N)]
+    # Agent always starts at (0,0) - bottom left in matrix is (N-1, 0)
+    agent_r = N - 1  # Bottom row
+    agent_c = 0      # Left column
+    
+    # Place agent at starting position
+    _map[agent_r][agent_c] = 'A'
+    
+    # Create list of safe cells (agent position and adjacent cells)
+    safe_cells = {(agent_r, agent_c)}
+    for (d_r, d_c) in DDX:
+        new_r = agent_r + d_r
+        new_c = agent_c + d_c
+        if utils.Utils.isValid(new_r, new_c, N):
+            safe_cells.add((new_r, new_c))
+    
+    # Place K Wumpus randomly (not in safe cells)
+    wumpus_count = 0
+    attempts = 0
+    while wumpus_count < K and attempts < 100:
+        row = random.randint(0, N-1)
+        col = random.randint(0, N-1)
+        if (row, col) not in safe_cells and 'W' not in _map[row][col]:
+            _map[row][col] += 'W'
+            wumpus_count += 1
+            # Add stench to adjacent cells
+            for (d_r, d_c) in DDX:
+                neighbor_row = row + d_r
+                neighbor_col = col + d_c
+                if utils.Utils.isValid(neighbor_row, neighbor_col, N):
+                    if 'S' not in _map[neighbor_row][neighbor_col]:
+                        _map[neighbor_row][neighbor_col] += 'S'
+        attempts += 1
+    
+    # Place pits with probability p (not in safe cells or cells with Wumpus)
     for row in range(N):
         for col in range(N):
-            flag = True
-            for (d_r, d_c) in DDX:
-                new_r = agent_r + d_r
-                new_c = agent_c + d_c
-                if row == new_r and col == new_c:
-                    flag = False
-                    break
-            if not flag:
-                continue
-            if row == agent_r and col == agent_c:
-                _map[row][col] += 'A'
-            elif random.randint(1, 20) % 11 == 0:
-                # wumpus here
-                _map[row][col] += 'W'
-                _map[row][col].replace('S', '')
-                # add stench
-                for (d_r, d_c) in DDX:
-                    neighbor_row = row + d_r
-                    neighbor_col = col + d_c
-                    if utils.Utils.isValid(neighbor_row, neighbor_col, N):
-                        if _map[neighbor_row][neighbor_col].find('S') == -1:
-                            _map[neighbor_row][neighbor_col] += 'S'
-            elif random.randint(1, 20) % 9 == 0:
-                # pit here
-                _map[row][col] += 'P'
-                # add stench
-                for (d_r, d_c) in DDX:
-                    neighbor_row = row + d_r
-                    neighbor_col = col + d_c
-                    if utils.Utils.isValid(neighbor_row, neighbor_col, N):
-                        if _map[neighbor_row][neighbor_col].find('B') == -1:
-                            _map[neighbor_row][neighbor_col] += 'B'
-            elif random.randint(1, 20) % 3 == 0:
-                _map[row][col] += 'G'
+            if (row, col) not in safe_cells and 'W' not in _map[row][col]:
+                if random.random() < p:  # Use proper probability
+                    _map[row][col] += 'P'
+                    # Add breeze to adjacent cells
+                    for (d_r, d_c) in DDX:
+                        neighbor_row = row + d_r
+                        neighbor_col = col + d_c
+                        if utils.Utils.isValid(neighbor_row, neighbor_col, N):
+                            if 'B' not in _map[neighbor_row][neighbor_col]:
+                                _map[neighbor_row][neighbor_col] += 'B'
+    
+    # Place exactly one gold (can be anywhere except cells with pit or wumpus)
+    gold_placed = False
+    attempts = 0
+    while not gold_placed and attempts < 100:
+        row = random.randint(0, N-1)
+        col = random.randint(0, N-1)
+        if 'P' not in _map[row][col] and 'W' not in _map[row][col]:
+            _map[row][col] += 'G'
+            gold_placed = True
+        attempts += 1
 
     for row in range(N):
         for col in range(N):
