@@ -158,15 +158,20 @@ class Game:
         if not self.board.move():
             self.status = "END_GAME"
         
-        # Only move Wumpus if game is still running (not ended) and not won
+        # ENHANCED FIX: Only move Wumpus at specific action intervals to reduce race conditions
         if self.status != "END_GAME" and not self.board.game_won:
             self.agent_action_count += 1
-            if self.map_name == "advance.txt" and self.agent_action_count % 5 == 0:
+            
+            # Move Wumpus every 5 actions, but only if no actions are pending
+            # This reduces the chance of race conditions during shooting sequences
+            if (self.map_name == "advance.txt" and 
+                self.agent_action_count % 5 == 0 and
+                len(self.board.action_list) <= 1):  # Allow 1 action pending (current action)
                 for wumpus in self.board.Wumpus:
                     # print(f"Moving Wumpus")  # Hidden for cleaner output
                     wumpus.move_random(self.board)
-        elif self.board.game_won:
-            print("🛑 Game won - Wumpus movement STOPPED")
+        # elif self.board.game_won:
+        #     print("🛑 Game won - Wumpus movement STOPPED")  # Hidden to prevent spam
 
     def back_click(self):
         self.status = "CHOOSE_MAP"

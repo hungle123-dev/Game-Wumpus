@@ -10,6 +10,7 @@ class Solution(Base):
         super().__init__(output_file)
         self.KB = KnowledgeBase()
         self.game_ended = False  # NEW: Flag to track if game has ended
+        self.is_advance_mode = "advance.txt" in input_file  # NEW: Check if advance mode
         self.read_map(input_file)
 
     def KB_logic_1(self, cell: Cell):
@@ -111,6 +112,35 @@ class Solution(Base):
         # if current step of agent feel Stench => agent perceives Stench
         if self.agent_cell.exist_Entity(4):
             self.add_action(Action.PERCEIVE_STENCH)
+            
+            # NEW: In advance mode with moving Wumpus, aggressively shoot at threats
+            if self.is_advance_mode:
+                self.append_event_to_output_file("ADVANCE MODE: Auto-defending against moving Wumpus!")
+                adj_cells = self.agent_cell.get_adj_cell(self.cell_matrix)
+                shots_fired = 0
+                
+                for adj_cell in adj_cells:
+                    # Skip if this is where we came from
+                    if adj_cell == self.agent_cell.parent:
+                        continue
+                        
+                    # Skip if we know it's safe (explored and no Wumpus)
+                    if adj_cell.is_explored() and not adj_cell.exist_Entity(2):
+                        continue
+                        
+                    # Shoot at unexplored cells or suspected Wumpus locations
+                    self.turn_to(adj_cell)
+                    self.add_action(Action.SHOOT)
+                    shots_fired += 1
+                    
+                    # REMOVED: All prediction logic for KILL_WUMPUS
+                    # Hit detection is now 100% handled at shoot time in Board.py
+                    
+                    # Limit shots to prevent infinite loop
+                    if shots_fired >= 4:
+                        break
+                        
+                self.append_event_to_output_file(f"Fired {shots_fired} defensive shots")
 
         # if current step of agent feel Breeze => agent perceives Breeze
         if self.agent_cell.exist_Entity(3):
@@ -176,7 +206,8 @@ class Solution(Base):
 
                         # Shoot this Wumpus
                         self.add_action(Action.SHOOT)
-                        self.add_action(Action.KILL_WUMPUS)
+                        # REMOVED: No longer pre-generate KILL_WUMPUS action
+                        # Hit detection now happens at actual shoot time in Board.py
                         valid_adj_cell.kill_wumpus(self.cell_matrix, self.KB)
                         self.append_event_to_output_file('KB: ' + str(self.KB.KB))
                     else:
@@ -214,9 +245,10 @@ class Solution(Base):
                     self.append_event_to_output_file('Try: ' + str(adj_cell.map_pos))
                     self.turn_to(adj_cell)
                     self.add_action(Action.SHOOT)
+                    # REMOVED: No longer pre-generate KILL_WUMPUS action
+                    # Hit detection now happens at actual shoot time in Board.py
                     if adj_cell.exist_Entity(2):
-                        # this cell have wumpus
-                        self.add_action(Action.KILL_WUMPUS)
+                        # this cell have wumpus - update KB but don't assume kill
                         adj_cell.kill_wumpus(self.cell_matrix, self.KB)
                         self.append_event_to_output_file('KB: ' + str(self.KB.KB))
 

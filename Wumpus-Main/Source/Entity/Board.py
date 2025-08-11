@@ -50,7 +50,6 @@ class Board(object):
         self.current_action = None
         self.action_history = []
         self.game_won = False  # NEW: Flag to track if game is won
-        self.agent_killed_by_wumpus = False  # Track agent death by Wumpus movement
         # AgentKnowledgeDisplay will be initialized after MESSAGE_WINDOW is set
         self.knowledge_display = None
         self.image_action = None
@@ -171,9 +170,6 @@ class Board(object):
         if self.end_action == Action.FALL_INTO_PIT:
             text_surface = my_font.render('DEFEAT', False, RED)
             screen.blit(text_surface, (WIDTH - 400, HEIGHT - 270))
-        elif self.end_action == Action.BE_EATEN_BY_WUMPUS:
-            text_surface = my_font.render('EATEN!', False, RED)
-            screen.blit(text_surface, (WIDTH - 390, HEIGHT - 270))
         elif self.end_action == Action.CLIMB_OUT_OF_THE_CAVE:
             text_surface = my_font.render('DONE !', False, YELLOW)
             screen.blit(text_surface, (WIDTH - 390, HEIGHT - 270))
@@ -216,12 +212,6 @@ class Board(object):
         if self.game_won:
             return False
             
-        # NEW: Check if agent was killed by Wumpus movement
-        if self.agent_killed_by_wumpus:
-            self.end_action = Action.BE_EATEN_BY_WUMPUS
-            self.change_animation = False
-            return False
-            
         self.delay = False
         self.Arrow = None
         self.message = None
@@ -251,6 +241,25 @@ class Board(object):
         elif action == Action.MOVE_FORWARD:
             self.Agent.move_forward()
             self.score += POINT["MOVE_FORWARD"]
+            
+            # CRITICAL: Check collision with Wumpus after moving
+            agent_pos = (self.Agent.row, self.Agent.col)
+            for wumpus in self.Wumpus:
+                if wumpus.row == agent_pos[0] and wumpus.col == agent_pos[1]:
+                    # Agent collided with Wumpus - DEATH!
+                    print(f"💀 COLLISION! Agent at {agent_pos} collided with Wumpus!")
+                    self.score += POINT["DYING"]  # Heavy penalty (-1000)
+                    self.end_action = Action.BE_EATEN_BY_WUMPUS  # Set death action
+                    return False  # End game immediately
+            
+            # Check collision with Pit after moving
+            for pit in self.Pits:
+                if pit.row == agent_pos[0] and pit.col == agent_pos[1]:
+                    # Agent fell into pit - DEATH!
+                    print(f"💀 FALL! Agent at {agent_pos} fell into pit!")
+                    self.score += POINT["DYING"]  # Heavy penalty (-1000)
+                    self.end_action = Action.FALL_INTO_PIT  # Set death action
+                    return False  # End game immediately
             
             # NEW: Check if agent reached exit door (0,0) after moving
             if self.Agent.row == 0 and self.Agent.col == 0:
@@ -288,9 +297,30 @@ class Board(object):
             pos_from = self.Agent.getRC()
             self.Arrow = Arrow(pos_from, pos_to)
             self.score += POINT["SHOOT"]
+            
+            # COMPREHENSIVE FIX: Check actual Wumpus collision at shoot time
+            wumpus_hit = False
+            
+            for wumpus in self.Wumpus[:]:  # Use slice copy to avoid modification during iteration
+                if wumpus.row == pos_to[0] and wumpus.col == pos_to[1]:
+                    # Actually hit a Wumpus at current position!
+                    self.Wumpus.remove(wumpus)  # Remove from actual list
+                    wumpus_hit = True
+                    break
+            
+            if wumpus_hit:
+                # Update stenches after killing Wumpus - comprehensive update
+                self.update_stenches()
 
-        # kill wumpus
+        # kill wumpus (legacy - now handled in SHOOT action)
         elif action == Action.KILL_WUMPUS:
+            # This should not be reached with new logic, but keep for compatibility
+            self.kill_wumpus()
+            self.delay = True
+
+        # kill wumpus (legacy - now handled in SHOOT action)
+        elif action == Action.KILL_WUMPUS:
+            # This should not be reached with new logic, but keep for compatibility
             self.kill_wumpus()
             self.delay = True
 
