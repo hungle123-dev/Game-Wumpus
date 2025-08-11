@@ -163,7 +163,7 @@ class Game:
             self.agent_action_count += 1
             if self.map_name == "advance.txt" and self.agent_action_count % 5 == 0:
                 for wumpus in self.board.Wumpus:
-                    print(f"Moving Wumpus")
+                    # print(f"Moving Wumpus")  # Hidden for cleaner output
                     wumpus.move_random(self.board)
         elif self.board.game_won:
             print("🛑 Game won - Wumpus movement STOPPED")

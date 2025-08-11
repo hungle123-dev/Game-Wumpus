@@ -7,7 +7,7 @@ class Wumpus(Entity):
     def __init__(self, row, col, size: int = CELL_SIZE):
         super().__init__(row, col, WUMPUS_IMAGE, size)
     def move_random(self, board):
-        print(f"Wumpus at ({self.row}, {self.col}) is moving randomly.")
+        # print(f"Wumpus at ({self.row}, {self.col}) is moving randomly.")  # Hidden for cleaner output
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
         random.shuffle(directions)
         for dx, dy in directions:
