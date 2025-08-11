@@ -10,6 +10,7 @@ class Agent(Entity):
         super().__init__(row, col, AGENT_IMAGE[0], size)
         self.N = N
         self.direction = 'RIGHT'
+        self.has_gold = False
 
     def setRC(self, row, col):
         if not utils.Utils.isValid(row, col, self.N):

@@ -199,12 +199,16 @@ class Board(object):
 
         if action == Action.TURN_RIGHT:
             self.Agent.turn_to(Action.TURN_RIGHT)
+            self.score += POINT["TURN_RIGHT"]
         elif action == Action.TURN_LEFT:
             self.Agent.turn_to(Action.TURN_LEFT)
+            self.score += POINT["TURN_LEFT"]
         elif action == Action.TURN_UP:
             self.Agent.turn_to(Action.TURN_UP)
+            self.score += POINT["TURN_UP"]
         elif action == Action.TURN_DOWN:
             self.Agent.turn_to(Action.TURN_DOWN)
+            self.score += POINT["TURN_DOWN"]
 
         # Move forward action
         elif action == Action.MOVE_FORWARD:
@@ -213,12 +217,16 @@ class Board(object):
 
         # Climb out the cave
         elif action == Action.CLIMB_OUT_OF_THE_CAVE:
-            self.score += POINT["CLIMB"]
+            if self.Agent.has_gold:
+                self.score += POINT["CLIMB_WITH_GOLD"]
+            else:
+                self.score += POINT["CLIMB_WITHOUT_GOLD"]
 
         # grab gold action
         elif action == Action.GRAB_GOLD:
             pos = self.Agent.getRC()
             remove_entity(self.Golds, pos)
+            self.Agent.has_gold = True
             self.score += POINT["PICK_GOLD"]
             self.delay = True
 

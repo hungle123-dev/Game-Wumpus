@@ -77,11 +77,16 @@ ROOT_OUTPUT = r"../Output/"
 
 # --- Default point --------
 POINT = {
-    "PICK_GOLD": 100,
-    "SHOOT": -100,
-    "DYING": -10000,
-    "CLIMB": 10,
-    "MOVE_FORWARD": -10
+    "PICK_GOLD": 10,
+    "SHOOT": -10,
+    "DYING": -1000,
+    "CLIMB_WITH_GOLD": 1000,
+    "CLIMB_WITHOUT_GOLD": 0,
+    "MOVE_FORWARD": -1,
+    "TURN_LEFT": -1,
+    "TURN_RIGHT": -1,
+    "TURN_UP": -1,
+    "TURN_DOWN": -1
 }
 # -------------------------
 
