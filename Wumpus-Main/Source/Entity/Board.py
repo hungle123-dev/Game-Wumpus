@@ -249,3 +249,30 @@ class Board(object):
         self.image_action = ImageAction(action)
 
         return True
+    
+    def is_valid_cell(self, row, col):
+        # Kiểm tra có nằm trong map không
+        if row < 0 or row >= self.matrix_dimension[0] or col < 0 or col >= self.matrix_dimension[1]:
+            return False
+        # Kiểm tra có phải tường không
+        for wall in self.Walls:
+            if wall.row == row and wall.col == col:
+                return False
+        # Kiểm tra có phải hố không
+        for pit in self.Pits:
+            if pit.row == row and pit.col == col:
+                return False
+        # Nếu không phải tường, không phải hố, không ra ngoài map thì hợp lệ
+        return True
+    
+    def update_stenches(self):
+        self.Stenches.clear()
+        for wumpus in self.Wumpus:
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                row = wumpus.row + dx
+                col = wumpus.col + dy
+                # Kiểm tra hợp lệ, không ra ngoài map, không trùng tường
+                if 0 <= row < self.matrix_dimension[0] and 0 <= col < self.matrix_dimension[1]:
+                    is_wall = any(wall.row == row and wall.col == col for wall in self.Walls)
+                    if not is_wall:
+                        self.Stenches.append(Stench(row, col))

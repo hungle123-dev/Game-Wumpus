@@ -61,6 +61,7 @@ class Game:
         self.clicked = False
         self.current_item = 0
         self.pause = False
+        self.agent_action_count = 0
 
         bg = pygame.image.load(BG_IMAGE)
         self.bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
@@ -91,8 +92,9 @@ class Game:
                                60, 'MAP 5', self.choose_map_5, WHITE)
         # Random map
         self.btnMapRand = Button2(WIDTH - 350, (HEIGHT - 100) // 2 - HEIGHT // 5 * 1, 300, 100, screen,
-                                  60, 'RANDOM', self.choose_rand_map, WHITE)
-
+                                60, 'RANDOM', self.choose_rand_map, WHITE)
+        self.btnAdvance = Button2(WIDTH - 350, (HEIGHT - 100) // 2 + HEIGHT // 5 * 1, 300, 100, screen,
+                                60, 'ADVANCE', self.choose_advance_map, WHITE)
         # Screen End Game
         self.btnBack = None
         self.btnRestart = None
@@ -200,10 +202,22 @@ class Game:
             self.result_name = "resultRandMap.txt"
             self.status = "RUN_GAME"
             pygame.display.set_caption(NAME_WINDOW + ' - Random map')
+    
+    def choose_advance_map(self):
+        if self.clicked:
+            self.map_name = "advance.txt"
+            self.result_name = "advance.txt"
+            self.status = "RUN_GAME"
+            pygame.display.set_caption(NAME_WINDOW + ' - Advance Map')
 
     def move(self):
         if not self.board.move():
             self.status = "END_GAME"
+        self.agent_action_count += 1
+        if self.map_name == "advance.txt" and self.agent_action_count % 5 == 0:
+            for wumpus in self.board.Wumpus:
+                print(f"Moving Wumpus")
+                wumpus.move_random(self.board)
 
     def back_click(self):
         self.status = "CHOOSE_MAP"
@@ -314,6 +328,7 @@ class Game:
                 self.btnMap4.process()
                 self.btnMap5.process()
                 self.btnMapRand.process()
+                self.btnAdvance.process()
             elif self.status == "INTRODUCE_MENU":
                 self.introduce()
             elif self.status == "ABOUT_US_MENU":
