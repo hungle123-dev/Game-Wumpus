@@ -16,7 +16,8 @@ from Entity.ViewImageAction import ImageAction
 from Entity.Wall import Wall
 from Entity.Wumpus import Wumpus
 from Run.Action import Action
-from Run.Solution import Solution
+from Run.HybridAgent import HybridAgent
+from Run.RandomAgentSimple import RandomAgentBaseline
 from constants import *
 
 DDX = [(0, 1), (0, -1), (-1, 0), (1, 0)]
@@ -65,8 +66,19 @@ class Board(object):
         self.Breezes = []
         self.Stenches = []
         self.Arrow = None
-        self.action_list = Solution(f'{ROOT_INPUT}{filename}',
-                                    f'{ROOT_OUTPUT}{outputfile}').solve()
+        # AGENT SELECTION: Change this to switch between agents
+        use_random_agent = False  # Set to True for Random Agent, False for Hybrid Agent
+        
+        if use_random_agent:
+            # Random Agent Baseline for comparison
+            self.action_list = RandomAgentBaseline(f'{ROOT_INPUT}{filename}',
+                                        f'{ROOT_OUTPUT}{outputfile}').solve()
+            print("🎲 Using Random Agent Baseline")
+        else:
+            # Hybrid Intelligent Agent
+            self.action_list = HybridAgent(f'{ROOT_INPUT}{filename}',
+                                        f'{ROOT_OUTPUT}{outputfile}').solve()
+            print("🧠 Using Hybrid Intelligent Agent")
 
         self.createBoardGame(filename)
 
@@ -330,8 +342,15 @@ class Board(object):
 
         # Update action tracking
         if action:
-            self.current_action = action.name
-            action_display = action.name.replace("_", " ")
+            # Handle both Action objects and strings for compatibility
+            if hasattr(action, 'name'):
+                self.current_action = action.name
+                action_display = action.name.replace("_", " ")
+            else:
+                # For string actions (fallback)
+                self.current_action = str(action)
+                action_display = str(action).replace("_", " ")
+            
             self.action_history.append(action_display)
             
             # Limit action history to prevent memory issues  
