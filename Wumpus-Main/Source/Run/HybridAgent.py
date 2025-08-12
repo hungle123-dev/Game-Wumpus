@@ -107,6 +107,15 @@ class HybridAgent(Solution):
         moves_to_exit = abs(self.agent_cell.map_pos[0]) + abs(self.agent_cell.map_pos[1])
         
         return moves_to_explore + moves_to_exit
+
+    def model_check_with_confidence(self, description: str, not_alpha):
+        """
+        Compatibility method for legacy calls
+        Returns (result, confidence) where confidence is always 1.0 for Forward Chaining
+        """
+        result = self.KB.infer(not_alpha)
+        confidence = 1.0  # Forward chaining gives certain results
+        return result, confidence
     
     def should_prioritize_gold(self) -> bool:
         """Decide if agent should prioritize gold collection over safety"""

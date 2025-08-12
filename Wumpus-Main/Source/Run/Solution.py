@@ -125,12 +125,88 @@ class Solution(Base):
     def add_KB(self, cell: Cell):
         neighbor_cells: list[Cell] = cell.get_adj_cell(self.cell_matrix)
 
+        # Traditional clause-based knowledge
         self.KB_logic_1(cell)
         self.KB_logic_2(cell)
         self.KB_logic_3(cell, neighbor_cells)
         self.KB_logic_4(cell, neighbor_cells)
 
+        # Forward Chaining: Add facts and rules directly
+        self._add_forward_chaining_knowledge(cell, neighbor_cells)
+
         self.append_event_to_output_file(str(self.KB.KB))
+
+    def _add_forward_chaining_knowledge(self, cell: Cell, neighbor_cells: list[Cell]):
+        """Add knowledge using Forward Chaining approach"""
+        
+        # Add facts about current cell
+        if cell.exist_Entity(3):  # Has breeze
+            breeze_fact = cell.get_literal(CellType.BREEZE, '+')
+            self.KB.add_fact(breeze_fact)
+        else:  # No breeze
+            no_breeze_fact = cell.get_literal(CellType.BREEZE, '-')
+            self.KB.add_fact(abs(no_breeze_fact))  # Convert to positive
+            
+        if cell.exist_Entity(4):  # Has stench
+            stench_fact = cell.get_literal(CellType.STENCH, '+')
+            self.KB.add_fact(stench_fact)
+        else:  # No stench
+            no_stench_fact = cell.get_literal(CellType.STENCH, '-')
+            self.KB.add_fact(abs(no_stench_fact))  # Convert to positive
+            
+        # Add rules for forward chaining
+        # Rule: If no breeze, then no adjacent pits
+        if not cell.exist_Entity(3):
+            for neighbor in neighbor_cells:
+                no_pit_fact = neighbor.get_literal(CellType.PIT, '-')
+                self.KB.add_fact(abs(no_pit_fact))
+                
+        # Rule: If no stench, then no adjacent wumpus
+        if not cell.exist_Entity(4):
+            for neighbor in neighbor_cells:
+                no_wumpus_fact = neighbor.get_literal(CellType.WUMPUS, '-')
+                self.KB.add_fact(abs(no_wumpus_fact))
+                
+                # Add direct facts about known entities
+        if cell.exist_Entity(1):  # Has pit
+            pit_fact = cell.get_literal(CellType.PIT, '+')
+            self.KB.add_fact(pit_fact)
+            
+        if cell.exist_Entity(2):  # Has wumpus
+            wumpus_fact = cell.get_literal(CellType.WUMPUS, '+')
+            self.KB.add_fact(wumpus_fact)
+
+    def _infer_wumpus_forward_chaining(self, cell: Cell) -> bool:
+        """Use Forward Chaining to infer if cell has wumpus"""
+        wumpus_literal = cell.get_literal(CellType.WUMPUS, '+')
+        derived_facts = self.KB.get_derived_facts()
+        
+        # Check if we can derive that this cell has wumpus
+        return wumpus_literal in derived_facts
+    
+    def _infer_no_wumpus_forward_chaining(self, cell: Cell) -> bool:
+        """Use Forward Chaining to infer if cell has no wumpus"""
+        no_wumpus_literal = cell.get_literal(CellType.WUMPUS, '-')
+        derived_facts = self.KB.get_derived_facts()
+        
+        # Check if we can derive that this cell has no wumpus
+        return abs(no_wumpus_literal) in derived_facts
+    
+    def _infer_pit_forward_chaining(self, cell: Cell) -> bool:
+        """Use Forward Chaining to infer if cell has pit"""
+        pit_literal = cell.get_literal(CellType.PIT, '+')
+        derived_facts = self.KB.get_derived_facts()
+        
+        # Check if we can derive that this cell has pit
+        return pit_literal in derived_facts
+    
+    def _infer_no_pit_forward_chaining(self, cell: Cell) -> bool:
+        """Use Forward Chaining to infer if cell has no pit"""
+        no_pit_literal = cell.get_literal(CellType.PIT, '-')
+        derived_facts = self.KB.get_derived_facts()
+        
+        # Check if we can derive that this cell has no pit
+        return abs(no_pit_literal) in derived_facts
 
     def top_condition(self):
         # if current step of agent have wumpus => game is finish, agent dies
@@ -250,10 +326,9 @@ class Solution(Base):
                     self.append_event_to_output_file('Infer: ' + str(valid_adj_cell.map_pos))
                     self.turn_to(valid_adj_cell)
 
-                    # Infer Wumpus
+                    # Infer Wumpus using Forward Chaining
                     self.add_action(Action.INFER_WUMPUS)
-                    not_alpha = [[valid_adj_cell.get_literal(CellType.WUMPUS, '-')]]
-                    have_wumpus = self.KB.infer(not_alpha)
+                    have_wumpus = self._infer_wumpus_forward_chaining(valid_adj_cell)
 
                     # if this cell have wumpus
                     if have_wumpus:
@@ -279,9 +354,8 @@ class Solution(Base):
                     else:
                         # Dont can detect exact wumpus
                         self.add_action(Action.INFER_NOT_WUMPUS)
-                        # Try to detect this cell don't have wumpus
-                        not_alpha = [[valid_adj_cell.get_literal(CellType.WUMPUS, '+')]]
-                        have_no_wumpus = self.KB.infer(not_alpha)
+                        # Try to detect this cell don't have wumpus using Forward Chaining
+                        have_no_wumpus = self._infer_no_wumpus_forward_chaining(valid_adj_cell)
 
                         # If we can infer no Wumpus
                         if have_no_wumpus:
@@ -331,8 +405,7 @@ class Solution(Base):
 
                     # infer pit
                     self.add_action(Action.INFER_PIT)
-                    not_alpha = [[valid_adj_cell.get_literal(CellType.PIT, '-')]]
-                    have_pit = self.KB.infer(not_alpha)
+                    have_pit = self._infer_pit_forward_chaining(valid_adj_cell)
 
                     # if we can infer pit
                     if have_pit:
@@ -345,8 +418,7 @@ class Solution(Base):
                     else:
                         # Infer not Pit.
                         self.add_action(Action.INFER_NOT_PIT)
-                        not_alpha = [[valid_adj_cell.get_literal(CellType.PIT, '+')]]
-                        have_no_pit = self.KB.infer(not_alpha)
+                        have_no_pit = self._infer_no_pit_forward_chaining(valid_adj_cell)
 
                         # If we can infer not Pit.
                         if have_no_pit:
