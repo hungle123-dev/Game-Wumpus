@@ -1,9 +1,9 @@
 8
--.-.-.-.B.P.SB.P
--.-.-.-.-.SB.W.SB
-B.B.-.-.B.P.SB.P
-PB.BP.B.-.-.B.PB.B
-BP.B.S.-.G.B.BP.PB
-B.S.WB.S.-.-.B.B
--.B.SP.B.-.-.-.A
-B.P.B.-.-.-.-.-
+SP.B.BP.BP.PB.BP.BP.PB
+WB.S.B.B.SBP.B.B.B
+SB.BG.-.S.WB.S.-.-
+PB.BP.B.-.S.-.-.-
+B.B.-.-.-.-.-.-
+-.-.-.A.B.-.-.-
+-.-.-.B.PB.B.-.-
+-.-.-.B.BP.B.-.-

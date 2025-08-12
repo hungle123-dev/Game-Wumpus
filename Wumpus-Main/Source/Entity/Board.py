@@ -78,7 +78,6 @@ class Board(object):
             # Hybrid Intelligent Agent
             self.action_list = HybridAgent(f'{ROOT_INPUT}{filename}',
                                         f'{ROOT_OUTPUT}{outputfile}').solve()
-            print("🧠 Using Hybrid Intelligent Agent")
 
         self.createBoardGame(filename)
 
@@ -122,8 +121,9 @@ class Board(object):
                 if STENCH in cell:
                     self.Stenches.append(Stench(row, col))
         
-        # NEW: Always create Door at (0,0) - the exit position
-        self.Door = Door(0, 0)
+        # Always create Door at bottom-left corner (N-1, 0)
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        self.Door = Door(EXIT_DOOR_ROW, EXIT_DOOR_COL)
 
     def draw(self, screen: pygame):
         pygame.draw.rect(screen, PURPLE, pygame.Rect(self.width + MARGIN['LEFT'] - self.spacing, MARGIN['TOP'] +
@@ -273,22 +273,29 @@ class Board(object):
                     self.end_action = Action.FALL_INTO_PIT  # Set death action
                     return False  # End game immediately
             
-            # NEW: Check if agent reached exit door (0,0) after moving
-            if self.Agent.row == 0 and self.Agent.col == 0:
-                # Agent reached exit door - STOP EVERYTHING!
+            # NEW: Check if agent reached exit door after moving
+            from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+            if self.Agent.row == EXIT_DOOR_ROW and self.Agent.col == EXIT_DOOR_COL:
+                # Agent reached exit door - Award points before ending!
+                if self.Agent.has_gold:
+                    # Only award 1000 bonus points for collecting gold and escaping
+                    self.score += 1000  # 1000 points for completing the game with gold
+                else:
+                    # No bonus for escaping without gold
+                    pass
+                
                 self.game_won = True  # Set won flag
                 self.action_list.clear()  # Clear all remaining actions
                 self.change_animation = False  # Stop animation
                 self.end_action = Action.CLIMB_OUT_OF_THE_CAVE  # Set end action
-                print("🎉 GAME WON! Agent reached exit door (0,0)")  # Debug
                 return False  # End game immediately
 
         # Climb out the cave
         elif action == Action.CLIMB_OUT_OF_THE_CAVE:
-            if self.Agent.has_gold:
-                self.score += POINT["CLIMB_WITH_GOLD"]
-            else:
-                self.score += POINT["CLIMB_WITHOUT_GOLD"]
+            # Scoring is now handled when agent reaches exit door position
+            # No additional scoring needed here as it's already done above
+            print("🚪 Climbing out of the cave...")
+            pass
 
         # grab gold action
         elif action == Action.GRAB_GOLD:

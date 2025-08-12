@@ -29,6 +29,7 @@ class HybridAgent(Solution):
         self.total_moves = 0
         self.arrow_used = False
         self.exploration_efficiency = 0.0
+        self.has_gold = False  # Track if agent has collected gold
         
         # Strategic objectives priority
         self.objectives = {
@@ -54,11 +55,17 @@ class HybridAgent(Solution):
         total_score += self.killed_wumpus * 500   # Wumpus kill bonus
         total_score -= self.total_moves           # Move penalty
         total_score += 10 if self.at_exit() else 0  # Exit bonus
+        
+        # Additional 1000 point bonus for climbing out with gold
+        if self.at_exit() and self.has_gold:
+            total_score += 1000  # Extra gold collection completion bonus
+            
         return total_score
     
     def at_exit(self) -> bool:
-        """Check if agent is at exit position (0,0)"""
-        return self.agent_cell.map_pos == (0, 0)
+        """Check if agent is at exit position (N-1,0)"""
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        return self.agent_cell.map_pos == (EXIT_DOOR_ROW, EXIT_DOOR_COL)
     
     def estimate_max_possible_score(self) -> int:
         """Estimate maximum achievable score from current state"""
@@ -353,3 +360,4 @@ class HybridAgent(Solution):
         # Track gold collection
         if self.agent_cell.exist_Entity(0):
             self.collected_gold += 1
+            self.has_gold = True  # Set flag when gold is collected

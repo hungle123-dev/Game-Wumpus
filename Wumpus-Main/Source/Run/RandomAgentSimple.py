@@ -107,8 +107,9 @@ class RandomAgentBaseline:
         if not self.arrow_used:
             possible_actions.append(SimpleAction.SHOOT)
         
-        # Add exit if at (0,0)
-        if self.current_position == (0, 0):
+        # Add exit if at exit door position
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        if self.current_position == (EXIT_DOOR_ROW, EXIT_DOOR_COL):
             possible_actions.append(SimpleAction.CLIMB_OUT_OF_THE_CAVE)
         
         # Choose random action
@@ -185,7 +186,8 @@ class RandomAgentBaseline:
             
             # Random chance to exit early (simulate getting "lucky")
             if self.performance_metrics['total_moves'] > 50 and random.random() < 0.1:
-                if self.current_position == (0, 0) or random.random() < 0.3:
+                from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+                if self.current_position == (EXIT_DOOR_ROW, EXIT_DOOR_COL) or random.random() < 0.3:
                     self.add_action(SimpleAction.CLIMB_OUT_OF_THE_CAVE)
                     self.performance_metrics['reached_exit'] = True
                     self.game_ended = True

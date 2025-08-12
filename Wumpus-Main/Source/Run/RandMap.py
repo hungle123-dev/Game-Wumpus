@@ -171,7 +171,7 @@ def random_Map(N: int = 8, map_name: str = "randMap.txt", K: int = 2, p: float =
     
     NEW LOGIC:
     - Agent spawns randomly anywhere
-    - Exit door is always at (0,0) - top-left corner
+    - Exit door is at bottom-left corner (N-1, 0)
     - Number of pits = (N*N - 2) * 0.2
     - GUARANTEED safe path from agent spawn to exit door
     """
@@ -184,9 +184,10 @@ def random_Map(N: int = 8, map_name: str = "randMap.txt", K: int = 2, p: float =
     print(f"Map size: {N}x{N} = {total_cells} cells")
     print(f"Number of pits to place: {num_pits}")
     
-    # Step 1: Set exit door position
-    exit_r = 0    # Top row
-    exit_c = 0    # Left column
+    # Step 1: Set exit door position (bottom-left corner)
+    from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+    exit_r = EXIT_DOOR_ROW    # Bottom row (N-1)
+    exit_c = EXIT_DOOR_COL    # Left column (0)
     
     # Step 2: Choose random agent spawn position (not at exit)
     agent_r, agent_c = None, None

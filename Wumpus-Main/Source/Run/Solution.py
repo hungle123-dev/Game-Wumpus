@@ -19,6 +19,7 @@ class Solution(Base):
         self.killed_wumpus = 0
         self.total_moves = 0
         self.arrow_used = False
+        self.has_gold = False  # Track if agent has collected gold
         
         self.read_map(input_file)
         # Initialize path planner after map is loaded
@@ -30,7 +31,13 @@ class Solution(Base):
         total_score += self.collected_gold * 1000  # Gold bonus
         total_score += self.killed_wumpus * 500   # Wumpus kill bonus
         total_score -= self.total_moves           # Move penalty
-        total_score += 10 if self.agent_cell.map_pos == (0, 0) else 0  # Exit bonus
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        total_score += 10 if self.agent_cell.map_pos == (EXIT_DOOR_ROW, EXIT_DOOR_COL) else 0  # Exit bonus
+        
+        # Additional 1000 point bonus for climbing out with gold
+        if self.agent_cell.map_pos == (EXIT_DOOR_ROW, EXIT_DOOR_COL) and self.has_gold:
+            total_score += 1000  # Extra gold collection completion bonus
+            
         return total_score
     
     def should_prioritize_gold(self) -> bool:
@@ -142,6 +149,7 @@ class Solution(Base):
             # delete gold
             self.agent_cell.grab_gold()
             self.collected_gold += 1  # Track for score optimization
+            self.has_gold = True  # Set flag when gold is collected
 
         # if current step of agent feel Stench => agent perceives Stench
         if self.agent_cell.exist_Entity(4):
@@ -199,11 +207,18 @@ class Solution(Base):
         self.top_condition()
         self.total_moves += 1  # Track moves for score optimization
 
-        # NEW: Check if agent reached exit door (0,0) - END GAME IMMEDIATELY
-        if self.agent_cell.map_pos[0] == 0 and self.agent_cell.map_pos[1] == 0:
+        # NEW: Check if agent reached exit door - END GAME IMMEDIATELY
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        if self.agent_cell.map_pos[0] == EXIT_DOOR_ROW and self.agent_cell.map_pos[1] == EXIT_DOOR_COL:
+            # Award points before ending the game!
+            if self.has_gold:
+                pass  # Bonus points awarded in Board.py
+            else:
+                pass  # No bonus for escaping without gold
+            
             self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
             self.game_ended = True  # Set flag to prevent further processing
-            return False  # End game immediately when reaching (0,0)
+            return False  # End game immediately when reaching exit door
 
         # Initialize valid_adj_cell_list.
         valid_adj_cell_list = self.agent_cell.get_adj_cell(self.cell_matrix)
@@ -371,8 +386,15 @@ class Solution(Base):
             self.move_to(new_cell)
             self.append_event_to_output_file('Move to: ' + str(self.agent_cell.map_pos))
 
-            # NEW: Check if we reached (0,0) after moving - STOP IMMEDIATELY!
-            if self.agent_cell.map_pos[0] == 0 and self.agent_cell.map_pos[1] == 0:
+            # NEW: Check if we reached exit door after moving - STOP IMMEDIATELY!
+            from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+            if self.agent_cell.map_pos[0] == EXIT_DOOR_ROW and self.agent_cell.map_pos[1] == EXIT_DOOR_COL:
+                # Award points before ending the game!
+                if self.has_gold:
+                    pass  # Bonus points awarded in Board.py
+                else:
+                    pass  # No bonus for escaping without gold
+                
                 self.add_action(Action.CLIMB_OUT_OF_THE_CAVE)
                 self.game_ended = True  # Set flag
                 return False  # End game immediately, DON'T continue to backtrack!
@@ -389,8 +411,9 @@ class Solution(Base):
         return True
 
     def navigate_to_exit(self):
-        """Navigate agent back to exit door at (0,0) using explored safe cells"""
-        target_pos = [0, 0]  # Exit door position
+        """Navigate agent back to exit door using explored safe cells"""
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        target_pos = [EXIT_DOOR_ROW, EXIT_DOOR_COL]  # Exit door position
         current_pos = self.agent_cell.map_pos
         
         # If already at exit, no need to navigate
@@ -419,7 +442,8 @@ class Solution(Base):
                 self.move_to(target_cell)
     def navigate_to_exit(self):
         """Navigate to exit using optimal path planning"""
-        target_pos = (0, 0)  # Exit position
+        from constants import EXIT_DOOR_ROW, EXIT_DOOR_COL
+        target_pos = (EXIT_DOOR_ROW, EXIT_DOOR_COL)  # Exit position
         current_pos = self.agent_cell.map_pos
         
         # Use path planner to find optimal route considering cost, risk, and utility

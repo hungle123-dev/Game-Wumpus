@@ -24,6 +24,8 @@ GREY: tuple = (200, 200, 200)
 NUMBER_CELL: int = 8  # Changed to 8 for N=8 requirement
 DEFAULT_WUMPUS_COUNT: int = 2  # Default number of Wumpus (K=2)
 DEFAULT_PIT_PROBABILITY: float = 0.2  # Default pit probability (p=0.2)
+EXIT_DOOR_ROW: int = NUMBER_CELL - 1  # Exit door at bottom-left (N-1, 0)
+EXIT_DOOR_COL: int = 0
 SPACING_CELL: int = 1
 CELL_SIZE: int = 60
 MARGIN: object = {
