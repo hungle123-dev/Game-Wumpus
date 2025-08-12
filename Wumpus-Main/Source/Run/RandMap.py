@@ -1,6 +1,9 @@
 import random
 import heapq
 from typing import List, Tuple, Set
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import utils
 from constants import ROOT_INPUT
@@ -157,21 +160,29 @@ def create_safe_path(start_r: int, start_c: int, end_r: int, end_c: int, N: int)
     return path
 
 
-def random_Map(N: int = 10, map_name: str = "randMap.txt", K: int = 2, p: float = 0.2) -> None:
+def random_Map(N: int = 8, map_name: str = "randMap.txt", K: int = 2, p: float = 0.2) -> None:
     """
     Generate random N x N Wumpus World map with GUARANTEED safe path
     Args:
         N: Grid size (default 10)
         map_name: Output file name
         K: Number of Wumpus (default 2)
-        p: Pit probability (default 0.2)
+        p: Pit density factor (default 0.2) - unused, will be calculated based on map size
     
     NEW LOGIC:
     - Agent spawns randomly anywhere
     - Exit door is always at (0,0) - top-left corner
+    - Number of pits = (N*N - 2) * 0.2
     - GUARANTEED safe path from agent spawn to exit door
     """
     _map = [['' for _ in range(N)] for _ in range(N)]
+    
+    # Calculate number of pits based on map size
+    total_cells = N * N
+    num_pits = int((total_cells - 2) * 0.2)  # (kích thước map - 2) * 0.2
+    
+    print(f"Map size: {N}x{N} = {total_cells} cells")
+    print(f"Number of pits to place: {num_pits}")
     
     # Step 1: Set exit door position
     exit_r = 0    # Top row
@@ -230,21 +241,55 @@ def random_Map(N: int = 10, map_name: str = "randMap.txt", K: int = 2, p: float 
                             _map[neighbor_row][neighbor_col] += 'S'
         attempts += 1
     
-    # Step 7: Place pits with probability p (not in protected cells)
+    # Step 7: Place exact number of pits (not in protected cells)
+    pit_count = 0
+    attempts = 0
+    available_cells = []
+    
+    # Collect all available cells for pit placement
     for row in range(N):
         for col in range(N):
-            if (row, col) not in protected_cells and 'W' not in _map[row][col]:
-                if random.random() < p:  # Use proper probability
-                    _map[row][col] += 'P'
-                    # Add breeze to adjacent cells (only if not protected)
-                    for (d_r, d_c) in DDX:
-                        neighbor_row = row + d_r
-                        neighbor_col = col + d_c
-                        if utils.Utils.isValid(neighbor_row, neighbor_col, N):
-                            # Only add breeze if not in protected safe path
-                            if (neighbor_row, neighbor_col) not in safe_path:
-                                if 'B' not in _map[neighbor_row][neighbor_col]:
-                                    _map[neighbor_row][neighbor_col] += 'B'
+            if ((row, col) not in protected_cells and 
+                'W' not in _map[row][col] and 
+                'A' not in _map[row][col]):
+                available_cells.append((row, col))
+    
+    print(f"Available cells for pit placement: {len(available_cells)}")
+    
+    # Randomly select cells for pit placement
+    if len(available_cells) >= num_pits:
+        selected_pit_cells = random.sample(available_cells, num_pits)
+        
+        for pit_row, pit_col in selected_pit_cells:
+            _map[pit_row][pit_col] += 'P'
+            pit_count += 1
+            
+            # Add breeze to adjacent cells (only if not protected)
+            for (d_r, d_c) in DDX:
+                neighbor_row = pit_row + d_r
+                neighbor_col = pit_col + d_c
+                if utils.Utils.isValid(neighbor_row, neighbor_col, N):
+                    # Only add breeze if not in protected safe path
+                    if (neighbor_row, neighbor_col) not in safe_path:
+                        if 'B' not in _map[neighbor_row][neighbor_col]:
+                            _map[neighbor_row][neighbor_col] += 'B'
+    else:
+        print(f"Warning: Not enough available cells for {num_pits} pits. Only {len(available_cells)} available.")
+        # Place as many pits as possible
+        for pit_row, pit_col in available_cells:
+            _map[pit_row][pit_col] += 'P'
+            pit_count += 1
+            
+            # Add breeze to adjacent cells
+            for (d_r, d_c) in DDX:
+                neighbor_row = pit_row + d_r
+                neighbor_col = pit_col + d_c
+                if utils.Utils.isValid(neighbor_row, neighbor_col, N):
+                    if (neighbor_row, neighbor_col) not in safe_path:
+                        if 'B' not in _map[neighbor_row][neighbor_col]:
+                            _map[neighbor_row][neighbor_col] += 'B'
+    
+    print(f"Actually placed pits: {pit_count}")
     
     # Step 8: Place exactly one gold (can be anywhere except cells with pit or wumpus)
     gold_placed = False
@@ -263,26 +308,18 @@ def random_Map(N: int = 10, map_name: str = "randMap.txt", K: int = 2, p: float 
             if len(_map[row][col]) == 0:
                 _map[row][col] = '-'
                 
-    # Step 10: Write file
-    file = open(f'{ROOT_INPUT}{map_name}', 'w')
-    file.write(f'{N}\n')
-    for row in range(N):
-        for col in range(N):
-            file.write(_map[row][col])
-            if col != N - 1:
-                file.write('.')
-        if row != N - 1:
-            file.write('\n')
-    file.close()
-    
-    # Debug: Print safe path information
+    # Debug: Print map generation information
     print(f"Generated map using A* pathfinding:")
     print(f"Agent spawn: ({agent_r}, {agent_c})")
     print(f"Exit door: ({exit_r}, {exit_c})")
+    print(f"Map size: {N}x{N} = {total_cells} cells")
+    print(f"Wumpus placed: {wumpus_count}/{K}")
+    print(f"Pits placed: {pit_count}/{num_pits}")
     print(f"A* optimal path length: {len(safe_path)} cells")
     print(f"Protected cells (path + buffer): {len(protected_cells)} cells")
     print(f"Path: {' -> '.join([f'({r},{c})' for r, c in safe_path])}")
-    # write file
+    
+    # Write file only once
     file = open(f'{ROOT_INPUT}{map_name}', 'w')
     file.write(f'{N}\n')
     for row in range(N):
@@ -293,3 +330,12 @@ def random_Map(N: int = 10, map_name: str = "randMap.txt", K: int = 2, p: float 
         if row != N - 1:
             file.write('\n')
     file.close()
+
+
+if __name__ == "__main__":
+    # Test different map sizes
+    for size in [4, 6, 8, 10]:
+        print(f"\n=== Testing map size {size}x{size} ===")
+        random_Map(size, f"test_{size}.txt", 1)
+        print(f"Expected pits: {int(((size * size) - 2) * 0.2)}")
+        print("-" * 50)
