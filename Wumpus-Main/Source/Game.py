@@ -58,21 +58,13 @@ class Game:
         self.btnBackHome = Button2(20, HEIGHT - 120, 200, 100, screen,
                                    60, 'BACK', self.back_home_click, WHITE)
 
-        self.btnMap1 = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 - HEIGHT // 5 * 2, 300, 100, screen,
-                               60, 'MAP 1', self.choose_map_1, WHITE)
-        self.btnMap2 = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 - HEIGHT // 5 * 1, 300, 100, screen,
-                               60, 'MAP 2', self.choose_map_2, WHITE)
-        self.btnMap3 = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2, 300, 100, screen,
-                               60, 'MAP 3', self.choose_map_3, WHITE)
-        self.btnMap4 = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 + HEIGHT // 5 * 1, 300, 100, screen,
-                               60, 'MAP 4', self.choose_map_4, WHITE)
-        self.btnMap5 = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 + HEIGHT // 5 * 2, 300, 100, screen,
-                               60, 'MAP 5', self.choose_map_5, WHITE)
-        # Random map
-        self.btnMapRand = Button2(WIDTH - 350, (HEIGHT - 100) // 2 - HEIGHT // 5 * 1, 300, 100, screen,
+        # Random, Advance and Comparison maps available with proper spacing
+        self.btnMapRand = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 - 120, 300, 100, screen,
                                 60, 'RANDOM', self.choose_rand_map, WHITE)
-        self.btnAdvance = Button2(WIDTH - 350, (HEIGHT - 100) // 2 + HEIGHT // 5 * 1, 300, 100, screen,
+        self.btnAdvance = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2, 300, 100, screen,
                                 60, 'ADVANCE', self.choose_advance_map, WHITE)
+        self.btnComparison = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 + 120, 300, 100, screen,
+                                60, 'COMPARISON', self.choose_comparison, WHITE)
         # Screen End Game
         self.btnBack = None
         self.btnRestart = None
@@ -103,41 +95,6 @@ class Game:
             self.clicked = False
             # Continue functionality - no need for scrollbar since we removed ListView
 
-    def choose_map_1(self):
-        if self.clicked:
-            self.map_name = "map1.txt"
-            self.result_name = "result1.txt"
-            self.status = "RUN_GAME"
-            pygame.display.set_caption(NAME_WINDOW + ' - Map 1')
-
-    def choose_map_2(self):
-        if self.clicked:
-            self.map_name = "map2.txt"
-            self.result_name = "result2.txt"
-            self.status = "RUN_GAME"
-            pygame.display.set_caption(NAME_WINDOW + ' - Map 2')
-
-    def choose_map_3(self):
-        if self.clicked:
-            self.map_name = "map3.txt"
-            self.result_name = "result3.txt"
-            self.status = "RUN_GAME"
-            pygame.display.set_caption(NAME_WINDOW + ' - Map 3')
-
-    def choose_map_4(self):
-        if self.clicked:
-            self.map_name = "map4.txt"
-            self.result_name = "result4.txt"
-            self.status = "RUN_GAME"
-            pygame.display.set_caption(NAME_WINDOW + ' - Map 4')
-
-    def choose_map_5(self):
-        if self.clicked:
-            self.map_name = "map5.txt"
-            self.result_name = "result5.txt"
-            self.status = "RUN_GAME"
-            pygame.display.set_caption(NAME_WINDOW + ' - Map 5')
-
     def choose_rand_map(self):
         if self.clicked:
             self.map_name = "randMap.txt"
@@ -153,6 +110,15 @@ class Game:
             self.result_name = "advance.txt"
             self.status = "RUN_GAME"
             pygame.display.set_caption(NAME_WINDOW + ' - Advance Map')
+
+    def choose_comparison(self):
+        if self.clicked:
+            self.map_name = "randMap.txt"
+            # Generate random map for comparison
+            random_Map(NUMBER_CELL, self.map_name, DEFAULT_WUMPUS_COUNT, DEFAULT_PIT_PROBABILITY)
+            self.result_name = "resultComparison.txt"
+            self.status = "RUN_GAME"
+            pygame.display.set_caption(NAME_WINDOW + ' - Comparison Mode')
 
     def move(self):
         if not self.board.move():
@@ -265,13 +231,9 @@ class Game:
                 self.btnStart.process()
                 self.btnQuit.process()
             elif self.status == "CHOOSE_MAP":
-                self.btnMap1.process()
-                self.btnMap2.process()
-                self.btnMap3.process()
-                self.btnMap4.process()
-                self.btnMap5.process()
                 self.btnMapRand.process()
                 self.btnAdvance.process()
+                self.btnComparison.process()
             elif self.status == "RUN_GAME":
                 self.running_menu = False
                 self.running = True
