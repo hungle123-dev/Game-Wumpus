@@ -2,20 +2,20 @@
 
 ## How to run
 
-`Bước 1:` Run command line 
+<!-- `Bước 1:` Run command line 
 ```bash
 git clone https://github.com/nxhawk/Wumpus-AI-HCMUS.git
-```
+``` -->
 
-`Bước 2:` Bật console <b>cùng cấp</b> với file `main.py` (trong thư mục <b>Source</b>).
+`Bước 1:` Bật console <b>cùng cấp</b> với file `main.py` (trong thư mục <b>Source</b>).
 
-`Bước 3:` Cài đặt Python trên trang chủ [python.org](https://www.python.org/downloads/). 
+`Bước 2:` Cài đặt Python trên trang chủ [python.org](https://www.python.org/downloads/). 
 Cài đặt thư viện cần thiết với lệnh sau: 
 ```bash 
 pip install –r requirements.txt
 ```
 
-`Bước 4:` Để chạy chương trình dùng lệnh 
+`Bước 3:` Để chạy chương trình dùng lệnh 
 ```bash 
 py main.py
 ```

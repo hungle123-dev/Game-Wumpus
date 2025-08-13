@@ -75,7 +75,7 @@ EMPTY = '-'
 # --- end Entity
 
 # LINK
-ROOT_INPUT = r"../Input/"
+ROOT_INPUT = r"../Testcase/"
 ROOT_OUTPUT = r"../Output/"
 # -------
 
