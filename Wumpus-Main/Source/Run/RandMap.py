@@ -164,7 +164,7 @@ def random_Map(N: int = 8, map_name: str = "randMap.txt", K: int = 2, p: float =
     """
     Generate random N x N Wumpus World map with GUARANTEED safe path
     Args:
-        N: Grid size (default 10)
+        N: Grid size (default 8)
         map_name: Output file name
         K: Number of Wumpus (default 2)
         p: Pit density factor (default 0.2) - unused, will be calculated based on map size
@@ -177,9 +177,9 @@ def random_Map(N: int = 8, map_name: str = "randMap.txt", K: int = 2, p: float =
     """
     _map = [['' for _ in range(N)] for _ in range(N)]
     
-    # Calculate number of pits based on map size
+    # Calculate number of pits based on map size and probability
     total_cells = N * N
-    num_pits = int((total_cells - 2) * 0.2)  # (kích thước map - 2) * 0.2
+    num_pits = int((total_cells - 2) * p)  # Use provided pit probability
     
     print(f"Map size: {N}x{N} = {total_cells} cells")
     print(f"Number of pits to place: {num_pits}")
@@ -222,10 +222,11 @@ def random_Map(N: int = 8, map_name: str = "randMap.txt", K: int = 2, p: float =
     
     # Step 5: Place agent
     _map[agent_r][agent_c] = 'A'
-    # Step 6: Place K Wumpus randomly (not in protected cells)
+    # Step 6: Place exactly K Wumpus randomly (not in protected cells)
     wumpus_count = 0
+    max_attempts = 1000  # Increase max attempts to ensure we place all wumpus
     attempts = 0
-    while wumpus_count < K and attempts < 100:
+    while wumpus_count < K and attempts < max_attempts:
         row = random.randint(0, N-1)
         col = random.randint(0, N-1)
         if (row, col) not in protected_cells and 'W' not in _map[row][col]:

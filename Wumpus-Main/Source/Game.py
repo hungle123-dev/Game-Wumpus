@@ -6,6 +6,7 @@ from Entity.Board import Board
 from Menu.Button import Button
 from Menu.Button2 import Button2
 from Menu.Item import Item
+from Menu.Settings import Settings
 from Run.RandMap import random_Map
 from constants import (NAME_WINDOW, FPS, WIDTH, HEIGHT, ICON_NAME, BLACK, MESSAGE_WINDOW, MARGIN, BG_IMAGE, FONT_3, RED,
                        WHITE, FONT_1, NAME_ITEM, YELLOW, NUMBER_CELL, DEFAULT_WUMPUS_COUNT, DEFAULT_PIT_PROBABILITY)
@@ -47,6 +48,9 @@ class Game:
 
         bg = pygame.image.load(BG_IMAGE)
         self.bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+        
+        # Initialize settings
+        self.settings = Settings(screen, WIDTH, HEIGHT)
 
         # Screen Home
         self.btnStart = Button2((WIDTH - 350) // 2, (HEIGHT - 100) // 2 - HEIGHT // 6, 350, 100, screen,
@@ -58,14 +62,13 @@ class Game:
         self.btnBackHome = Button2(20, HEIGHT - 120, 200, 100, screen,
                                    60, 'BACK', self.back_home_click, WHITE)
 
-        # Random, Advance and Comparison maps available with proper spacing
+        # Random, Advance, and Settings maps available with proper spacing
         self.btnMapRand = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 - 120, 300, 100, screen,
                                 60, 'RANDOM', self.choose_rand_map, WHITE)
         self.btnAdvance = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2, 300, 100, screen,
                                 60, 'ADVANCE', self.choose_advance_map, WHITE)
-        self.btnComparison = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 + 120, 300, 100, screen,
-                                60, 'COMPARISON', self.choose_comparison, WHITE)
-        # Screen End Game
+        self.btnSettings = Button2((WIDTH - 300) // 2, (HEIGHT - 100) // 2 + 120, 300, 100, screen,
+                                60, 'SETTINGS', lambda: self.settings.toggle(), WHITE)
         self.btnBack = None
         self.btnRestart = None
         self.btnPause = None
@@ -98,8 +101,8 @@ class Game:
     def choose_rand_map(self):
         if self.clicked:
             self.map_name = "randMap.txt"
-            # Use new parameters for random map generation
-            random_Map(NUMBER_CELL, self.map_name, DEFAULT_WUMPUS_COUNT, DEFAULT_PIT_PROBABILITY)
+            # Use customized parameters from settings
+            random_Map(NUMBER_CELL, self.map_name, self.settings.wumpus_count, self.settings.pit_probability)
             self.result_name = "resultRandMap.txt"
             self.status = "RUN_GAME"
             pygame.display.set_caption(NAME_WINDOW + ' - Random map')
@@ -110,15 +113,6 @@ class Game:
             self.result_name = "advance.txt"
             self.status = "RUN_GAME"
             pygame.display.set_caption(NAME_WINDOW + ' - Advance Map')
-
-    def choose_comparison(self):
-        if self.clicked:
-            self.map_name = "randMap.txt"
-            # Generate random map for comparison
-            random_Map(NUMBER_CELL, self.map_name, DEFAULT_WUMPUS_COUNT, DEFAULT_PIT_PROBABILITY)
-            self.result_name = "resultComparison.txt"
-            self.status = "RUN_GAME"
-            pygame.display.set_caption(NAME_WINDOW + ' - Comparison Mode')
 
     def move(self):
         if not self.board.move():
@@ -233,7 +227,9 @@ class Game:
             elif self.status == "CHOOSE_MAP":
                 self.btnMapRand.process()
                 self.btnAdvance.process()
-                self.btnComparison.process()
+                self.btnSettings.process()
+                if self.settings.visible:
+                    self.settings.draw()
             elif self.status == "RUN_GAME":
                 self.running_menu = False
                 self.running = True
