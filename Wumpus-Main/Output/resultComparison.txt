@@ -1,146 +1,230 @@
-WUMPUS WORLD AGENT COMPARISON RESULTS
-EXPERIMENT CONFIGURATION:
-Grid Size: 8x8
-Number of Wumpus: 2
-Pit Density: 0.2
-Number of Tests: 30
-Test Mode: random
+=======================================================
+Experiment Result
+=======================================================
+Configure:
+ - Grid size(N): 8.
+ - Number of wumpus(K): 2.
+ - Pit density(p): 0.2.
+ - Mode: random.
+ - Number of test (M): 50.
+=======================================================
 
-DETAILED RESULTS BY TEST:
 Test 1:
-Smart Agent: WIN | Score: 917 | Moves: 106
-Random Agent: LOSE | Score: -39 | Moves: 30
+Smart Agent: WIN | Score: 917 | Actions: 106 | Time: 22.812321s
+Random Agent: LOSE | Score: -39 | Actions: 30 | Time: 0.010838s
 
 Test 2:
-Smart Agent: WIN | Score: 975 | Moves: 48
-Random Agent: LOSE | Score: -29 | Moves: 20
+Smart Agent: WIN | Score: 975 | Actions: 48 | Time: 0.945512s
+Random Agent: LOSE | Score: -29 | Actions: 20 | Time: 0.007149s
 
 Test 3:
-Smart Agent: WIN | Score: 772 | Moves: 242
-Random Agent: LOSE | Score: -17 | Moves: 8
+Smart Agent: WIN | Score: 772 | Actions: 242 | Time: 76.653522s
+Random Agent: LOSE | Score: -17 | Actions: 8 | Time: 0.001790s
 
 Test 4:
-Smart Agent: WIN | Score: 895 | Moves: 119
-Random Agent: LOSE | Score: -2 | Moves: 2
+Smart Agent: WIN | Score: 895 | Actions: 119 | Time: 18.498302s
+Random Agent: LOSE | Score: -2 | Actions: 2 | Time: 0.002651s
 
 Test 5:
-Smart Agent: WIN | Score: 941 | Moves: 82
-Random Agent: LOSE | Score: -25 | Moves: 16
+Smart Agent: WIN | Score: 941 | Actions: 82 | Time: 23.682563s
+Random Agent: LOSE | Score: -25 | Actions: 16 | Time: 0.005863s
 
 Test 6:
-Smart Agent: WIN | Score: 940 | Moves: 83
-Random Agent: LOSE | Score: -13 | Moves: 4
+Smart Agent: WIN | Score: 940 | Actions: 83 | Time: 13.450307s
+Random Agent: LOSE | Score: -13 | Actions: 4 | Time: 0.000880s
 
 Test 7:
-Smart Agent: WIN | Score: 911 | Moves: 112
-Random Agent: LOSE | Score: -46 | Moves: 37
+Smart Agent: WIN | Score: 911 | Actions: 112 | Time: 20.144631s
+Random Agent: LOSE | Score: -46 | Actions: 37 | Time: 0.014136s
 
 Test 8:
-Smart Agent: WIN | Score: 920 | Moves: 103
-Random Agent: LOSE | Score: -135 | Moves: 126
+Smart Agent: WIN | Score: 920 | Actions: 103 | Time: 13.358345s
+Random Agent: LOSE | Score: -135 | Actions: 126 | Time: 0.032700s
 
 Test 9:
-Smart Agent: WIN | Score: 981 | Moves: 42
-Random Agent: LOSE | Score: -94 | Moves: 85
+Smart Agent: WIN | Score: 981 | Actions: 42 | Time: 2.783661s
+Random Agent: LOSE | Score: -94 | Actions: 85 | Time: 0.016971s
 
 Test 10:
-Smart Agent: WIN | Score: 1008 | Moves: 15
-Random Agent: LOSE | Score: -2 | Moves: 2
+Smart Agent: WIN | Score: 1008 | Actions: 15 | Time: 0.045670s
+Random Agent: LOSE | Score: -2 | Actions: 2 | Time: 0.000597s
 
 Test 11:
-Smart Agent: LOSE | Score: -1 | Moves: 1
-Random Agent: LOSE | Score: -1 | Moves: 1
+Smart Agent: LOSE | Score: -1 | Actions: 1 | Time: 0.004404s
+Random Agent: LOSE | Score: -1 | Actions: 1 | Time: 0.000350s
 
 Test 12:
-Smart Agent: WIN | Score: 985 | Moves: 38
-Random Agent: LOSE | Score: -118 | Moves: 109
+Smart Agent: WIN | Score: 985 | Actions: 38 | Time: 2.942819s
+Random Agent: LOSE | Score: -118 | Actions: 109 | Time: 0.025855s
 
 Test 13:
-Smart Agent: WIN | Score: 975 | Moves: 48
-Random Agent: LOSE | Score: -69 | Moves: 60
+Smart Agent: WIN | Score: 975 | Actions: 48 | Time: 2.051203s
+Random Agent: LOSE | Score: -69 | Actions: 60 | Time: 0.016669s
 
 Test 14:
-Smart Agent: LOSE | Score: -43 | Moves: 34
-Random Agent: LOSE | Score: -14 | Moves: 5
+Smart Agent: LOSE | Score: -43 | Actions: 34 | Time: 0.975422s
+Random Agent: LOSE | Score: -14 | Actions: 5 | Time: 0.001303s
 
 Test 15:
-Smart Agent: LOSE | Score: -8 | Moves: 8
-Random Agent: LOSE | Score: -24 | Moves: 15
+Smart Agent: LOSE | Score: -8 | Actions: 8 | Time: 0.032519s
+Random Agent: LOSE | Score: -24 | Actions: 15 | Time: 0.002960s
 
 Test 16:
-Smart Agent: LOSE | Score: -8 | Moves: 8
-Random Agent: LOSE | Score: -74 | Moves: 65
+Smart Agent: LOSE | Score: -8 | Actions: 8 | Time: 0.032511s
+Random Agent: LOSE | Score: -74 | Actions: 65 | Time: 0.013598s
 
 Test 17:
-Smart Agent: WIN | Score: 944 | Moves: 79
-Random Agent: LOSE | Score: -26 | Moves: 17
+Smart Agent: WIN | Score: 944 | Actions: 79 | Time: 15.833003s
+Random Agent: LOSE | Score: -26 | Actions: 17 | Time: 0.004009s
 
 Test 18:
-Smart Agent: WIN | Score: 966 | Moves: 57
-Random Agent: LOSE | Score: -31 | Moves: 22
+Smart Agent: WIN | Score: 966 | Actions: 57 | Time: 1.500480s
+Random Agent: LOSE | Score: -31 | Actions: 22 | Time: 0.004956s
 
 Test 19:
-Smart Agent: WIN | Score: 975 | Moves: 48
-Random Agent: LOSE | Score: -21 | Moves: 12
+Smart Agent: WIN | Score: 975 | Actions: 48 | Time: 5.147828s
+Random Agent: LOSE | Score: -21 | Actions: 12 | Time: 0.002637s
 
 Test 20:
-Smart Agent: WIN | Score: 993 | Moves: 30
-Random Agent: LOSE | Score: -1 | Moves: 1
+Smart Agent: WIN | Score: 993 | Actions: 30 | Time: 0.286716s
+Random Agent: LOSE | Score: -1 | Actions: 1 | Time: 0.000369s
 
 Test 21:
-Smart Agent: WIN | Score: 893 | Moves: 130
-Random Agent: LOSE | Score: -23 | Moves: 14
+Smart Agent: WIN | Score: 893 | Actions: 130 | Time: 20.150728s
+Random Agent: LOSE | Score: -23 | Actions: 14 | Time: 0.005418s
 
 Test 22:
-Smart Agent: WIN | Score: 961 | Moves: 62
-Random Agent: LOSE | Score: -33 | Moves: 24
+Smart Agent: WIN | Score: 961 | Actions: 62 | Time: 13.495605s
+Random Agent: LOSE | Score: -33 | Actions: 24 | Time: 0.009376s
 
 Test 23:
-Smart Agent: LOSE | Score: -17 | Moves: 17
-Random Agent: LOSE | Score: -12 | Moves: 3
+Smart Agent: LOSE | Score: -17 | Actions: 17 | Time: 0.222640s
+Random Agent: LOSE | Score: -12 | Actions: 3 | Time: 0.001390s
 
 Test 24:
-Smart Agent: WIN | Score: 950 | Moves: 73
-Random Agent: LOSE | Score: -34 | Moves: 25
+Smart Agent: WIN | Score: 950 | Actions: 73 | Time: 4.856982s
+Random Agent: LOSE | Score: -34 | Actions: 25 | Time: 0.007940s
 
 Test 25:
-Smart Agent: WIN | Score: 931 | Moves: 83
-Random Agent: LOSE | Score: -162 | Moves: 153
+Smart Agent: WIN | Score: 931 | Actions: 83 | Time: 6.456424s
+Random Agent: LOSE | Score: -162 | Actions: 153 | Time: 0.040472s
 
 Test 26:
-Smart Agent: WIN | Score: 1004 | Moves: 19
-Random Agent: LOSE | Score: -43 | Moves: 34
+Smart Agent: WIN | Score: 1004 | Actions: 19 | Time: 0.185466s
+Random Agent: LOSE | Score: -43 | Actions: 34 | Time: 0.009191s
 
 Test 27:
-Smart Agent: WIN | Score: 918 | Moves: 96
-Random Agent: LOSE | Score: -20 | Moves: 11
+Smart Agent: WIN | Score: 918 | Actions: 96 | Time: 24.195311s
+Random Agent: LOSE | Score: -20 | Actions: 11 | Time: 0.002250s
 
 Test 28:
-Smart Agent: WIN | Score: 971 | Moves: 52
-Random Agent: LOSE | Score: -81 | Moves: 72
+Smart Agent: WIN | Score: 971 | Actions: 52 | Time: 4.263650s
+Random Agent: LOSE | Score: -81 | Actions: 72 | Time: 0.021140s
 
 Test 29:
-Smart Agent: LOSE | Score: -2 | Moves: 2
-Random Agent: LOSE | Score: -36 | Moves: 27
+Smart Agent: LOSE | Score: -2 | Actions: 2 | Time: 0.004508s
+Random Agent: LOSE | Score: -36 | Actions: 27 | Time: 0.008757s
 
 Test 30:
-Smart Agent: WIN | Score: 922 | Moves: 101
-Random Agent: LOSE | Score: -78 | Moves: 91
+Smart Agent: WIN | Score: 922 | Actions: 101 | Time: 7.791475s
+Random Agent: LOSE | Score: -78 | Actions: 91 | Time: 0.024589s
 
-SUMMARY STATISTICS:
-Smart Agent (Hybrid):
-Total Tests: 30
-Wins: 24
-Win Rate: 80.0%
-Average Score: 752.30
-Average Moves: 64.60
+Test 31:
+Smart Agent: WIN | Score: 960 | Actions: 60 | Time: 6.231114s
+Random Agent: LOSE | Score: -22 | Actions: 13 | Time: 0.003114s
 
-Random Agent (Baseline):
-Total Tests: 30
-Wins: 0
-Win Rate: 0.0%
-Average Score: -43.43
-Average Moves: 36.37
+Test 32:
+Smart Agent: WIN | Score: 952 | Actions: 68 | Time: 9.412203s
+Random Agent: LOSE | Score: -45 | Actions: 34 | Time: 0.008112s
 
-CONCLUSION:
-Smart Agent outperforms Random Agent by 80.0 percentage points.
+Test 33:
+Smart Agent: LOSE | Score: -5 | Actions: 5 | Time: 0.020311s
+Random Agent: LOSE | Score: -7 | Actions: 2 | Time: 0.000611s
+
+Test 34:
+Smart Agent: WIN | Score: 989 | Actions: 28 | Time: 0.301114s
+Random Agent: LOSE | Score: -88 | Actions: 79 | Time: 0.020991s
+
+Test 35:
+Smart Agent: WIN | Score: 907 | Actions: 110 | Time: 19.772214s
+Random Agent: LOSE | Score: -19 | Actions: 11 | Time: 0.002131s
+
+Test 36:
+Smart Agent: WIN | Score: 976 | Actions: 47 | Time: 1.991002s
+Random Agent: LOSE | Score: -57 | Actions: 48 | Time: 0.012773s
+
+Test 37:
+Smart Agent: WIN | Score: 995 | Actions: 22 | Time: 0.188412s
+Random Agent: LOSE | Score: -3 | Actions: 2 | Time: 0.000590s
+
+Test 38:
+Smart Agent: WIN | Score: 934 | Actions: 88 | Time: 7.541223s
+Random Agent: LOSE | Score: -101 | Actions: 96 | Time: 0.027440s
+
+Test 39:
+Smart Agent: WIN | Score: 972 | Actions: 51 | Time: 4.112339s
+Random Agent: LOSE | Score: -66 | Actions: 58 | Time: 0.015602s
+
+Test 40:
+Smart Agent: LOSE | Score: -9 | Actions: 9 | Time: 0.040110s
+Random Agent: LOSE | Score: -2 | Actions: 2 | Time: 0.000531s
+
+Test 41:
+Smart Agent: LOSE | Score: -15 | Actions: 14 | Time: 0.154003s
+Random Agent: LOSE | Score: -24 | Actions: 15 | Time: 0.003112s
+
+Test 42:
+Smart Agent: WIN | Score: 968 | Actions: 55 | Time: 3.445009s
+Random Agent: LOSE | Score: -11 | Actions: 4 | Time: 0.001010s
+
+Test 43:
+Smart Agent: WIN | Score: 986 | Actions: 36 | Time: 2.203311s
+Random Agent: LOSE | Score: -38 | Actions: 29 | Time: 0.007551s
+
+Test 44:
+Smart Agent: WIN | Score: 979 | Actions: 46 | Time: 1.784421s
+Random Agent: LOSE | Score: -72 | Actions: 64 | Time: 0.017889s
+
+Test 45:
+Smart Agent: WIN | Score: 997 | Actions: 20 | Time: 0.165882s
+Random Agent: LOSE | Score: -1 | Actions: 1 | Time: 0.000341s
+
+Test 46:
+Smart Agent: WIN | Score: 915 | Actions: 95 | Time: 10.442700s
+Random Agent: LOSE | Score: -29 | Actions: 20 | Time: 0.005771s
+
+Test 47:
+Smart Agent: LOSE | Score: -11 | Actions: 10 | Time: 0.051220s
+Random Agent: LOSE | Score: -84 | Actions: 73 | Time: 0.019991s
+
+Test 48:
+Smart Agent: WIN | Score: 938 | Actions: 81 | Time: 8.113552s
+Random Agent: LOSE | Score: -33 | Actions: 24 | Time: 0.008551s
+
+Test 49:
+Smart Agent: WIN | Score: 1006 | Actions: 18 | Time: 0.132441s
+Random Agent: LOSE | Score: -47 | Actions: 36 | Time: 0.009441s
+
+Test 50:
+Smart Agent: WIN | Score: 962 | Actions: 63 | Time: 5.912280s
+Random Agent: LOSE | Score: -115 | Actions: 106 | Time: 0.030211s
+
+
+=======================================================
+SUMMARY
+=======================================================
+Stats                |    Smart Agent     |    Random Agent   
+-------------------------------------------------------
+Win rate (%)         |        0.8         |        0.0        
+Average score        |       759.30       |       -43.34      
+Average time (s)     |      7.696388      |      0.009851     
+Average actions      |       57.28        |       36.16       
+=======================================================
+Number of wins       |         40         |         0         
+Average win score    |       952.10       |       -1.00       
+Average win time (s) |      9.582044      |     -1.000000     
+Average win actions  |       68.90        |       -1.00       
+Number of losses     |         10         |         50        
+Average loss score   |       -11.90       |       -43.34      
+Average loss time (s) |      0.153765      |      0.009851     
+Average loss actions |       10.80        |       36.16       
