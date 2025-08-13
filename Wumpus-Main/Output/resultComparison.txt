@@ -1,0 +1,146 @@
+WUMPUS WORLD AGENT COMPARISON RESULTS
+EXPERIMENT CONFIGURATION:
+Grid Size: 8x8
+Number of Wumpus: 2
+Pit Density: 0.2
+Number of Tests: 30
+Test Mode: random
+
+DETAILED RESULTS BY TEST:
+Test 1:
+Smart Agent: WIN | Score: 917 | Moves: 106
+Random Agent: LOSE | Score: -39 | Moves: 30
+
+Test 2:
+Smart Agent: WIN | Score: 975 | Moves: 48
+Random Agent: LOSE | Score: -29 | Moves: 20
+
+Test 3:
+Smart Agent: WIN | Score: 772 | Moves: 242
+Random Agent: LOSE | Score: -17 | Moves: 8
+
+Test 4:
+Smart Agent: WIN | Score: 895 | Moves: 119
+Random Agent: LOSE | Score: -2 | Moves: 2
+
+Test 5:
+Smart Agent: WIN | Score: 941 | Moves: 82
+Random Agent: LOSE | Score: -25 | Moves: 16
+
+Test 6:
+Smart Agent: WIN | Score: 940 | Moves: 83
+Random Agent: LOSE | Score: -13 | Moves: 4
+
+Test 7:
+Smart Agent: WIN | Score: 911 | Moves: 112
+Random Agent: LOSE | Score: -46 | Moves: 37
+
+Test 8:
+Smart Agent: WIN | Score: 920 | Moves: 103
+Random Agent: LOSE | Score: -135 | Moves: 126
+
+Test 9:
+Smart Agent: WIN | Score: 981 | Moves: 42
+Random Agent: LOSE | Score: -94 | Moves: 85
+
+Test 10:
+Smart Agent: WIN | Score: 1008 | Moves: 15
+Random Agent: LOSE | Score: -2 | Moves: 2
+
+Test 11:
+Smart Agent: LOSE | Score: -1 | Moves: 1
+Random Agent: LOSE | Score: -1 | Moves: 1
+
+Test 12:
+Smart Agent: WIN | Score: 985 | Moves: 38
+Random Agent: LOSE | Score: -118 | Moves: 109
+
+Test 13:
+Smart Agent: WIN | Score: 975 | Moves: 48
+Random Agent: LOSE | Score: -69 | Moves: 60
+
+Test 14:
+Smart Agent: LOSE | Score: -43 | Moves: 34
+Random Agent: LOSE | Score: -14 | Moves: 5
+
+Test 15:
+Smart Agent: LOSE | Score: -8 | Moves: 8
+Random Agent: LOSE | Score: -24 | Moves: 15
+
+Test 16:
+Smart Agent: LOSE | Score: -8 | Moves: 8
+Random Agent: LOSE | Score: -74 | Moves: 65
+
+Test 17:
+Smart Agent: WIN | Score: 944 | Moves: 79
+Random Agent: LOSE | Score: -26 | Moves: 17
+
+Test 18:
+Smart Agent: WIN | Score: 966 | Moves: 57
+Random Agent: LOSE | Score: -31 | Moves: 22
+
+Test 19:
+Smart Agent: WIN | Score: 975 | Moves: 48
+Random Agent: LOSE | Score: -21 | Moves: 12
+
+Test 20:
+Smart Agent: WIN | Score: 993 | Moves: 30
+Random Agent: LOSE | Score: -1 | Moves: 1
+
+Test 21:
+Smart Agent: WIN | Score: 893 | Moves: 130
+Random Agent: LOSE | Score: -23 | Moves: 14
+
+Test 22:
+Smart Agent: WIN | Score: 961 | Moves: 62
+Random Agent: LOSE | Score: -33 | Moves: 24
+
+Test 23:
+Smart Agent: LOSE | Score: -17 | Moves: 17
+Random Agent: LOSE | Score: -12 | Moves: 3
+
+Test 24:
+Smart Agent: WIN | Score: 950 | Moves: 73
+Random Agent: LOSE | Score: -34 | Moves: 25
+
+Test 25:
+Smart Agent: WIN | Score: 931 | Moves: 83
+Random Agent: LOSE | Score: -162 | Moves: 153
+
+Test 26:
+Smart Agent: WIN | Score: 1004 | Moves: 19
+Random Agent: LOSE | Score: -43 | Moves: 34
+
+Test 27:
+Smart Agent: WIN | Score: 918 | Moves: 96
+Random Agent: LOSE | Score: -20 | Moves: 11
+
+Test 28:
+Smart Agent: WIN | Score: 971 | Moves: 52
+Random Agent: LOSE | Score: -81 | Moves: 72
+
+Test 29:
+Smart Agent: LOSE | Score: -2 | Moves: 2
+Random Agent: LOSE | Score: -36 | Moves: 27
+
+Test 30:
+Smart Agent: WIN | Score: 922 | Moves: 101
+Random Agent: LOSE | Score: -78 | Moves: 91
+
+SUMMARY STATISTICS:
+Smart Agent (Hybrid):
+Total Tests: 30
+Wins: 24
+Win Rate: 80.0%
+Average Score: 752.30
+Average Moves: 64.60
+
+Random Agent (Baseline):
+Total Tests: 30
+Wins: 0
+Win Rate: 0.0%
+Average Score: -43.43
+Average Moves: 36.37
+
+CONCLUSION:
+Smart Agent outperforms Random Agent by 80.0 percentage points.
